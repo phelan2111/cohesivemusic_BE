@@ -1,6 +1,6 @@
 const userRouter = require('./user-router')
 function route(app) {
-    app.use('/product', userRouter);
+    app.use('/user', userRouter);
 }
 
 module.exports = route;
