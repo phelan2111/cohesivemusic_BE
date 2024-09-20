@@ -3,8 +3,7 @@ const app = express();
 const morgan = require('morgan');
 const route = require('./routes');
 const cors = require('cors');
-
-app.use(morgan('combined'));
+const mongodb = require('./data/mongoDB');
 
 // example about cors:
 // var corsOptions = {
@@ -13,12 +12,16 @@ app.use(morgan('combined'));
 // }
 
 // Cors
-
 app.use(cors());
+
+//todo: connect db
+mongodb.connect();
 
 //Route
 route(app);
 
-app.listen(3000, () => {
-	console.log('Server started on port 3000');
+app.use(morgan('combined'));
+
+app.listen(8000, () => {
+	console.log('Server started on port 8000');
 });
