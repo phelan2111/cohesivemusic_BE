@@ -5,5 +5,7 @@ class UserController {
 			message: 'Hello from user controller',
 		});
 	}
+
+	register(req, res, nex) {}
 }
 module.exports = new UserController();
