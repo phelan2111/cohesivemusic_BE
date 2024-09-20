@@ -4,29 +4,29 @@ const Schema = mongoose.Schema;
 const User = new Schema(
 	{
 		email: {
-			type: string,
+			type: String,
 			unique: true,
 			required: true,
 		},
 		password: {
-			type: string,
+			type: String,
 			required: true,
 		},
 		token: {
-			type: string,
+			type: String,
 			required: true,
 		},
 		gender: {
-			type: number,
+			type: Number,
 			required: true,
 		},
 		playlistId: {
-			type: string,
+			type: String,
 			unique: true,
 		},
 	},
 	{
-		timestamps: 'created_at',
+		timestamps: true,
 	},
 );
 
