@@ -1,7 +1,7 @@
 const morgan = require('morgan');
 const logger = require('../utils/logger');
 
-function morganMiddleware(app) {
+function MorganMiddleware(app) {
 	const morganSetUp = morgan(
 		':method :url :status :res[content-length] - :response-time ms',
 		{
@@ -13,4 +13,4 @@ function morganMiddleware(app) {
 	app.use(morganSetUp);
 }
 
-module.exports = morganMiddleware;
+module.exports = MorganMiddleware;

@@ -3,16 +3,25 @@ const app = express();
 const route = require('./routes');
 const cors = require('cors');
 const mongodb = require('./data/mongoDB');
-const morganMiddleware = require('./middleware/morgan');
+const MorganMiddleware = require('./middleware/morgan');
+const AuthService = require('./middleware/auth');
+const bodyParser = require('body-parser');
 
 //morgan
-morganMiddleware(app);
+MorganMiddleware(app);
 
 // Cors
 app.use(cors());
 
+// Check auth
+AuthService(app)
+
 //todo: connect db
 mongodb.connect();
+
+//bodyParser
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 //Route
 route(app);

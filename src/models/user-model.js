@@ -21,7 +21,7 @@ const User = new Schema(
 			required: true,
 		},
 		playlistId: {
-			type: String,
+			type: [String],
 			unique: true,
 		},
 	},
