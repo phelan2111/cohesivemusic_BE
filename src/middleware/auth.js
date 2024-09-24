@@ -4,7 +4,7 @@ function AuthService(app) {
 	app.use(function (req, res, next) {
 		if (req.headers && req.headers.token) {
 			jsonwebtoken.verify(
-				req.headers.token.split(' ')[0],
+				req.headers.token,
 				'RESTFULAPIs',
 				function (err, decode) {
 					if (err) req.user = undefined;

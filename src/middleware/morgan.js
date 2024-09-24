@@ -6,7 +6,7 @@ function MorganMiddleware(app) {
 		':method :url :status :res[content-length] - :response-time ms',
 		{
 			stream: {
-				write: (message) => logger.http(message.trim()),
+				write: (message) => logger.info(message.trim()),
 			},
 		},
 	);

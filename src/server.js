@@ -14,7 +14,7 @@ MorganMiddleware(app);
 app.use(cors());
 
 // Check auth
-AuthService(app)
+AuthService(app);
 
 //todo: connect db
 mongodb.connect();
@@ -25,7 +25,6 @@ app.use(bodyParser.json());
 
 //Route
 route(app);
-
 
 app.listen(8000, () => {
 	console.log('Server started on port 8000');
