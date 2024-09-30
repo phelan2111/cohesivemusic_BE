@@ -22,7 +22,7 @@ class UserController {
 				const hasUserExist = Helper.isEmpty(user);
 				if (!hasUserExist) {
 					res.json({
-						...Enum.response.userExistedInSystem,
+						...Enum.user.userExistedInSystem,
 					});
 				} else {
 					const otpRandom = Helper.randomOTP();
@@ -62,7 +62,7 @@ class UserController {
 								})
 								.catch(() => {
 									res.json({
-										...Enum.response.userExistedInSystem,
+										...Enum.user.userExistedInSystem,
 									});
 								});
 						})
@@ -75,6 +75,7 @@ class UserController {
 			logger.error(error.message);
 		}
 	}
+	7;
 
 	verifyOTP(req, res, next) {
 		try {
@@ -94,7 +95,7 @@ class UserController {
 									{
 										email,
 									},
-									25,
+									30,
 								),
 							},
 						});
@@ -111,24 +112,68 @@ class UserController {
 	}
 
 	register(req, res, next) {
-		console.log('req.user', req.user);
-		res.json({
-			email: 'Ly minh tan',
-			password: '$2y$13$tck7GmMrUMhLGPO5Qn4NAu53nAVa..kJqTq/RiNZ28N/l1P3Nd.TK',
-		});
+		try {
+			logger.info('Controller user execute register');
+			const { password, email, firstName, lastName } = req.body;
+			const userScheme = new User({
+				email,
+				password,
+				firstName,
+				lastName,
+			});
+			userScheme
+				.save()
+				.then(() => {
+					res.json({
+						...Enum.response.success,
+					});
+				})
+				.catch((error) => {
+					logger.error('Controller user execute register', error);
+					res.json({
+						...Enum.response.systemError,
+					});
+				});
+		} catch (error) {
+			logger.error('Controller user execute register', error.message);
+		}
 	}
 
 	login(req, res, next) {
-		res.json({
-			token: jwt.sign(
+		try {
+			const { id, password, ...rest } = req.body;
+			const token = Helper.generateToken(
 				{
-					email: 'Ly minh tan',
-					password: '$2y$13$tck7GmMrUMhLGPO5Qn4NAu53nAVa..kJqTq/RiNZ28N/l1P3Nd.TK',
-					exp: Math.floor(Date.now() / 1000) + 60,
+					...rest,
+					password,
 				},
-				'RESTFULAPIs',
-			),
-		});
+				1800,
+			);
+
+			User.findByIdAndUpdate(id, { token })
+				.then((user) => {
+					const response = {
+						email: user.email,
+						firstName: user.firstName,
+						lastName: user.lastName,
+						token: user.token,
+						gender: user.gender,
+						playlistId: user.playlistId,
+					};
+					res.json({
+						...Enum.response.success,
+						data: {
+							...response,
+						},
+					});
+				})
+				.catch((error) => {
+					logger.error('Controller user execute login', error);
+					res.json({ ...Enum.response.systemError });
+				});
+		} catch (error) {
+			logger.error('Controller user execute login', error.message);
+		}
 	}
 
 	information(req, res, next) {

@@ -15,13 +15,19 @@ const User = new Schema(
 			type: String,
 			required: true,
 		},
-		token: {
+		firstName: {
 			type: String,
 			required: true,
 		},
+		lastName: {
+			type: String,
+			required: true,
+		},
+		token: {
+			type: String,
+		},
 		gender: {
 			type: Number,
-			required: true,
 		},
 		playlistId: {
 			type: [String],

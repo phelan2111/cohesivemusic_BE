@@ -4,6 +4,22 @@ const Enum = {
 			male: 1,
 			female: 0,
 		},
+		userExistedInSystem: {
+			code: 402,
+			mess: 'User Had Existed In System',
+		},
+		mail: {
+			code: 403,
+			mess: 'Error Mail System',
+		},
+		userHasNotExistedInSystem: {
+			code: 404,
+			mess: 'User Had Not Existed In System',
+		},
+		wrongPassword: {
+			code: 405,
+			mess: 'Wrong Password',
+		},
 	},
 	response: {
 		success: {
@@ -15,17 +31,13 @@ const Enum = {
 			code: 401,
 			mess: 'The client must authenticate itself to get the requested response',
 		},
-		userExistedInSystem: {
-			code: 402,
-			mess: 'User had existed in system',
-		},
-		mail: {
-			code: 403,
-			mess: 'Error System',
-		},
 		otpNotMatch: {
 			code: 404,
-			mess: 'OTP not match',
+			mess: 'OTP Not Match',
+		},
+		systemError: {
+			code: 405,
+			mess: 'System Error',
 		},
 	},
 };
