@@ -1,10 +1,9 @@
 const User = require('../models/user-model');
 const OTP = require('../models/otp-model');
-const jwt = require('jsonwebtoken');
 const logger = require('../utils/logger');
 const Helper = require('../utils/helper');
 const Enum = require('../data/enum');
-const MiddlewareResendEmail = require('../middleware/sendOTP');
+const ServiceCommon = require('../services/common');
 
 class UserController {
 	index(req, res, next) {
@@ -18,7 +17,7 @@ class UserController {
 			logger.info('Controller user execute verify username');
 			logger.debug('Controller user get request from client', req.body);
 			const { email } = req.body;
-			User.findOne({ email: email }).then((user) => {
+			User.findOne({ email }).then((user) => {
 				const hasUserExist = Helper.isEmpty(user);
 				if (!hasUserExist) {
 					res.json({
@@ -40,7 +39,7 @@ class UserController {
 							}
 						})
 						.then(() => {
-							MiddlewareResendEmail({
+							ServiceCommon.resendEmail({
 								to: email,
 								subject: 'Your OTP',
 								message: `<p>Your OTP is: <strong>${otpRandom}</strong></p>`,
@@ -114,12 +113,14 @@ class UserController {
 	register(req, res, next) {
 		try {
 			logger.info('Controller user execute register');
-			const { password, email, firstName, lastName } = req.body;
+			const { password, firstName, lastName } = req.body;
+			const { email } = req.user;
 			const userScheme = new User({
-				email,
 				password,
 				firstName,
 				lastName,
+				email,
+				status: Enum.user.status.active,
 			});
 			userScheme
 				.save()
@@ -146,6 +147,7 @@ class UserController {
 				{
 					...rest,
 					password,
+					id,
 				},
 				1800,
 			);

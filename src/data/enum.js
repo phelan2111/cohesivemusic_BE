@@ -20,6 +20,16 @@ const Enum = {
 			code: 405,
 			mess: 'Wrong Password',
 		},
+		status: {
+			lock: 0,
+			active: 1,
+		},
+	},
+	browse: {
+		status: {
+			hidden: 0,
+			display: 1,
+		},
 	},
 	response: {
 		success: {

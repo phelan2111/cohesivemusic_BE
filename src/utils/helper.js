@@ -3,11 +3,15 @@ var randomstring = require('randomstring');
 const logger = require('../utils/logger');
 
 class Helper {
-	isEmpty(dataItem) {
-		if (dataItem) {
+	isEmpty(value) {
+		try {
+			if (value === undefined || value === null || value === '' || value.length === 0) {
+				return true;
+			}
 			return false;
+		} catch {
+			return true;
 		}
-		return true;
 	}
 	isEmptyObject(dataItem) {
 		const values = Object.values(dataItem);
@@ -18,6 +22,19 @@ class Helper {
 			}
 		}
 		return false;
+	}
+	isEmptyObjectByValidate(object, arrayField) {
+		try {
+			for (let index = 0; index < arrayField.length; index++) {
+				const field = arrayField[index];
+				if (this.isEmpty(object?.[field])) {
+					return true;
+				}
+			}
+			return false;
+		} catch (error) {
+			logger.error(error);
+		}
 	}
 	generateToken(dataItem, exp) {
 		return jwt.sign(

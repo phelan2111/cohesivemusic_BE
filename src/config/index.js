@@ -15,5 +15,10 @@ module.exports = {
 			mail: process.env.SMPT_MAIL,
 			appPass: process.env.SMPT_APP_PASS,
 		},
+		cloudinary: {
+			cloudName: process.env.CLOUD_NAME,
+			apiKey: process.env.API_KEY,
+			apiSecret: process.env.API_SECRET,
+		},
 	},
 };

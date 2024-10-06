@@ -31,7 +31,10 @@ const User = new Schema(
 		},
 		playlistId: {
 			type: [String],
-			unique: true,
+		},
+		status: {
+			type: Number,
+			required: true,
 		},
 	},
 	{

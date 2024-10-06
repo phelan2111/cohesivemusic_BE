@@ -5,7 +5,14 @@ const cors = require('cors');
 const mongodb = require('./data/mongoDB');
 const MorganMiddleware = require('./middleware/morgan');
 const AuthService = require('./middleware/auth');
-const bodyParser = require('body-parser');
+const Cloudinary = require('./middleware/cloudinary');
+const BodyParser = require('./middleware/bodyParser');
+
+//body parser
+BodyParser(app);
+
+//cloudinary
+Cloudinary();
 
 //morgan
 MorganMiddleware(app);
@@ -18,10 +25,6 @@ AuthService(app);
 
 //todo: connect db
 mongodb.connect();
-
-//bodyParser
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 //Route
 route(app);
