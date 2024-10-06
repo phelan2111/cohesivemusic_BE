@@ -1,17 +1,17 @@
 const ServiceCommon = require('../services/common');
 const Enum = require('../data/enum');
 const logger = require('../utils/logger');
-const Browse = require('../models/brwose-model');
+const Attribute = require('../models/attribute-model ');
 
-class BrowserController {
-	//[PUT]-[/browse]
+class AttributeController {
+	//[PUT]-[/attribute]
 	create(req, res, next) {
 		const dataBody = req.body;
-		const browse = new Browse({
+		const attribute = new Attribute({
 			...dataBody,
 			status: Enum.attribute.status.display,
 		});
-		browse
+		attribute
 			.save()
 			.then(() => {
 				res.json({
@@ -26,15 +26,15 @@ class BrowserController {
 			});
 	}
 
-	//[GET]-[/browse]
+	//[GET]-[/attribute]
 	get(req, res, next) {
-		Browse.find({ status: Enum.attribute.status.display })
-			.then((browses) => {
+		Attribute.find({ status: Enum.attribute.status.display })
+			.then((attributes) => {
 				res.json({
 					...Enum.response.success,
 					data: {
-						list: browses,
-						total: browses.length,
+						list: attributes,
+						total: attributes.length,
 					},
 				});
 			})
@@ -50,11 +50,13 @@ class BrowserController {
 	update(req, res, next) {
 		const { id, ...rest } = req.body;
 
-		Browse.findByIdAndUpdate(id, rest)
+		Attribute.findByIdAndUpdate(id, rest)
 			.then((browseItem) => {
 				res.json({
 					...Enum.response.success,
-					data: browseItem,
+					data: {
+						id: browseItem._id.toString(),
+					},
 				});
 			})
 			.catch((error) => {
@@ -69,7 +71,7 @@ class BrowserController {
 	updateStatus(req, res, next) {
 		const { id, status } = req.body;
 
-		Browse.findByIdAndUpdate(id, { status })
+		Attribute.findByIdAndUpdate(id, { status })
 			.then(() => {
 				res.json({
 					...Enum.response.success,
@@ -89,7 +91,7 @@ class BrowserController {
 		logger.debug('Controller browse get request from client', req.file);
 
 		ServiceCommon.uploadImage(req.file.path, {
-			folder: 'browse/image',
+			folder: 'attribute/image',
 			use_filename: true,
 		})
 			.then((data) => {
@@ -112,4 +114,4 @@ class BrowserController {
 	}
 }
 
-module.exports = new BrowserController();
+module.exports = new AttributeController();

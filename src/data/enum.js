@@ -25,7 +25,7 @@ const Enum = {
 			active: 1,
 		},
 	},
-	browse: {
+	attribute: {
 		status: {
 			hidden: 0,
 			display: 1,

@@ -1,37 +1,37 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const User = new Schema(
+const Song = new Schema(
 	{
-		email: {
+		songName: {
 			type: String,
-			unique: true,
+			required: true,
 		},
-		phone: {
+		image: {
+			type: String,
+			required: true,
+		},
+		songDescription: {
+			type: String,
+			required: true,
+		},
+		singers: {
+			type: [String],
+			required: true,
+		},
+		link: {
+			type: String,
+			required: true,
+		},
+		lyrics: {
+			type: String,
+			required: true,
+		},
+		views: {
 			type: Number,
-			unique: true,
 		},
-		password: {
-			type: String,
-			required: true,
-		},
-		firstName: {
-			type: String,
-			required: true,
-		},
-		lastName: {
-			type: String,
-			required: true,
-		},
-		token: {
-			type: String,
-		},
-		gender: {
+		time: {
 			type: Number,
-		},
-		status: {
-			type: Number,
-			required: true,
 		},
 	},
 	{
@@ -39,4 +39,4 @@ const User = new Schema(
 	},
 );
 
-module.exports = mongoose.model('user', User);
+module.exports = mongoose.model('Song', Song);
