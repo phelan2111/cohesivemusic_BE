@@ -6,12 +6,6 @@ const Enum = require('../data/enum');
 const ServiceCommon = require('../services/common');
 
 class UserController {
-	index(req, res, next) {
-		res.json({
-			message: 'Hello from user controller',
-		});
-	}
-
 	verifyUsername(req, res, next) {
 		try {
 			logger.info('Controller user execute verify username');
@@ -121,6 +115,7 @@ class UserController {
 				lastName,
 				email,
 				status: Enum.user.status.active,
+				role: Enum.user.role.normal,
 			});
 			userScheme
 				.save()
@@ -158,14 +153,15 @@ class UserController {
 						email: user.email,
 						firstName: user.firstName,
 						lastName: user.lastName,
-						token: user.token,
 						gender: user.gender,
 						playlistId: user.playlistId,
+						role: user.role,
 					};
 					res.json({
 						...Enum.response.success,
 						data: {
 							...response,
+							token,
 						},
 					});
 				})
@@ -182,6 +178,25 @@ class UserController {
 		res.json({
 			email: 'Ly minh tan',
 			password: '$2y$13$tck7GmMrUMhLGPO5Qn4NAu53nAVa..kJqTq/RiNZ28N/l1P3Nd.TK',
+		});
+	}
+
+	getList(req, res, next) {
+		logger.info('Controller user execute getList');
+		User.find({}).then((dataItem) => {
+			const data = dataItem.map((i) => {
+				const user = i;
+				user.token = '';
+				delete user.token;
+				return user;
+			});
+			res.json({
+				...Enum.response.success,
+				data: {
+					total: dataItem.length,
+					list: data,
+				},
+			});
 		});
 	}
 }

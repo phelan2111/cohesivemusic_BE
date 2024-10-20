@@ -9,20 +9,24 @@ const Enum = {
 			mess: 'User Had Existed In System',
 		},
 		mail: {
-			code: 403,
+			code: '403_EMAIL',
 			mess: 'Error Mail System',
 		},
 		userHasNotExistedInSystem: {
-			code: 404,
+			code: '404_EXISTED_IN_SYSTEM',
 			mess: 'User Had Not Existed In System',
 		},
 		wrongPassword: {
-			code: 405,
+			code: '405_WRONG_PASSWORD',
 			mess: 'Wrong Password',
 		},
 		status: {
 			lock: 0,
 			active: 1,
+		},
+		role: {
+			admin: 0,
+			normal: 1,
 		},
 	},
 	attribute: {
@@ -33,20 +37,20 @@ const Enum = {
 	},
 	response: {
 		success: {
-			code: 200,
+			code: '200',
 			mess: 'Ok',
 		},
 		//auth
 		unauthorized: {
-			code: 401,
+			code: '401_AUTH',
 			mess: 'The client must authenticate itself to get the requested response',
 		},
 		otpNotMatch: {
-			code: 404,
+			code: '404_NOT_MATCH',
 			mess: 'OTP Not Match',
 		},
 		systemError: {
-			code: 405,
+			code: '405_SYSTEM',
 			mess: 'System Error',
 		},
 	},

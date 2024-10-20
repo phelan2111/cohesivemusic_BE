@@ -33,6 +33,16 @@ const User = new Schema(
 			type: Number,
 			required: true,
 		},
+		role: {
+			type: Number,
+			required: true,
+		},
+		address: {
+			type: String,
+		},
+		avatar: {
+			type: String,
+		},
 	},
 	{
 		timestamps: true,
