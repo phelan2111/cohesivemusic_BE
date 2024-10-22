@@ -10,6 +10,7 @@ class SingerController {
 		const singer = new Singer({
 			...dataBody,
 			followers: 0,
+			status: Enum.singer.status.unActive,
 		});
 		singer
 			.save()
@@ -67,10 +68,10 @@ class SingerController {
 			});
 	}
 
-	//[POST]-[/browse/uploadAvatar]
+	//[POST]-[/singer/uploadAvatar]
 	uploadAvatar(req, res, next) {
-		logger.info('Controller browse execute upload image username');
-		logger.debug('Controller browse get request from client', req.file);
+		logger.info('Controller singer execute upload image username');
+		logger.debug('Controller singer get request from client', req.file);
 
 		ServiceCommon.uploadImage(req.file.path, {
 			folder: 'singer/image',
@@ -95,10 +96,10 @@ class SingerController {
 			});
 	}
 
-	//[POST]-[/browse/uploadCover]
+	//[POST]-[/singer/uploadCover]
 	uploadCovers(req, res, next) {
-		logger.info('Controller browse execute upload image username');
-		logger.debug('Controller browse get request from client', req.files);
+		logger.info('Controller singer execute upload image username');
+		logger.debug('Controller singer get request from client', req.files);
 		const promises = req.files.map(async (file) => {
 			return await ServiceCommon.uploadImage(file.path, {
 				folder: 'singer/image',
@@ -121,6 +122,27 @@ class SingerController {
 			.catch((error) => {
 				logger.error(error);
 
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+	}
+
+	//[DELETE]-[/singer]
+	updateStatus(req, res, next) {
+		const { id, status } = req.body;
+
+		Singer.findByIdAndUpdate(id, { status })
+			.then((singerItem) => {
+				res.json({
+					...Enum.response.success,
+					data: {
+						id: singerItem._id.toString(),
+					},
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
 				res.json({
 					...Enum.response.systemError,
 				});

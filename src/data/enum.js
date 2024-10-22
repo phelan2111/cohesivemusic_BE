@@ -29,6 +29,13 @@ const Enum = {
 			normal: 1,
 		},
 	},
+	singer: {
+		status: {
+			unActive: 0,
+			active: 1,
+			block: 2,
+		},
+	},
 	attribute: {
 		status: {
 			hidden: 0,

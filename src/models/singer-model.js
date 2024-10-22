@@ -25,6 +25,10 @@ const Singer = new Schema(
 		contact: {
 			type: Object,
 		},
+		status: {
+			type: Number,
+			required: true,
+		},
 	},
 	{
 		timestamps: true,
