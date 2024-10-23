@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const Attribute = new Schema(
+const Genre = new Schema(
 	{
-		attributeName: {
+		nameGenre: {
 			type: String,
 			required: true,
 		},
-		attributeImage: {
+		imageGenre: {
 			type: String,
 			required: true,
 		},
-		playlistId: {
+		topicIdList: {
 			type: [String],
 		},
 		status: {
@@ -24,4 +24,4 @@ const Attribute = new Schema(
 	},
 );
 
-module.exports = mongoose.model('attribute', Attribute);
+module.exports = mongoose.model('genre', Genre);

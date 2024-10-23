@@ -10,7 +10,7 @@ class SingerController {
 		const singer = new Singer({
 			...dataBody,
 			followers: 0,
-			status: Enum.singer.status.unActive,
+			status: Enum.singer.status.inActive,
 		});
 		singer
 			.save()

@@ -1,17 +1,17 @@
 const ServiceCommon = require('../services/common');
 const Enum = require('../data/enum');
 const logger = require('../utils/logger');
-const Browse = require('../models/brwose-model');
+const Genre = require('../models/genre-model');
 
-class BrowserController {
-	//[PUT]-[/browse]
+class GenreController {
+	//[PUT]-[/genre]
 	create(req, res, next) {
 		const dataBody = req.body;
-		const browse = new Browse({
+		const genre = new Genre({
 			...dataBody,
 			status: Enum.attribute.status.display,
 		});
-		browse
+		genre
 			.save()
 			.then(() => {
 				res.json({
@@ -26,15 +26,15 @@ class BrowserController {
 			});
 	}
 
-	//[GET]-[/browse]
+	//[GET]-[/genre]
 	get(req, res, next) {
-		Browse.find({ status: Enum.attribute.status.display })
-			.then((browses) => {
+		Genre.find({ status: Enum.attribute.status.display })
+			.then((genres) => {
 				res.json({
 					...Enum.response.success,
 					data: {
-						list: browses,
-						total: browses.length,
+						list: genres,
+						total: genres.length,
 					},
 				});
 			})
@@ -46,15 +46,15 @@ class BrowserController {
 			});
 	}
 
-	//[POST]-[/browse]
+	//[POST]-[/genre]
 	update(req, res, next) {
 		const { id, ...rest } = req.body;
 
-		Browse.findByIdAndUpdate(id, rest)
-			.then((browseItem) => {
+		Genre.findByIdAndUpdate(id, rest)
+			.then((genreItem) => {
 				res.json({
 					...Enum.response.success,
-					data: browseItem,
+					data: genreItem,
 				});
 			})
 			.catch((error) => {
@@ -65,11 +65,11 @@ class BrowserController {
 			});
 	}
 
-	//[DELETE]-[/browse]
+	//[DELETE]-[/genre]
 	updateStatus(req, res, next) {
 		const { id, status } = req.body;
 
-		Browse.findByIdAndUpdate(id, { status })
+		Genre.findByIdAndUpdate(id, { status })
 			.then(() => {
 				res.json({
 					...Enum.response.success,
@@ -83,13 +83,13 @@ class BrowserController {
 			});
 	}
 
-	//[POST]-[/browse/uploadImage]
+	//[POST]-[/genre/uploadImage]
 	uploadImage(req, res, next) {
-		logger.info('Controller browse execute upload image username');
-		logger.debug('Controller browse get request from client', req.file);
+		logger.info('Controller genre execute upload image username');
+		logger.debug('Controller genre get request from client', req.file);
 
 		ServiceCommon.uploadImage(req.file.path, {
-			folder: 'browse/image',
+			folder: 'genre/image',
 			use_filename: true,
 		})
 			.then((data) => {
@@ -112,4 +112,4 @@ class BrowserController {
 	}
 }
 
-module.exports = new BrowserController();
+module.exports = new GenreController();

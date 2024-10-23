@@ -23,6 +23,7 @@ const Enum = {
 		status: {
 			lock: 0,
 			active: 1,
+			inActive: 2,
 		},
 		role: {
 			admin: 0,
@@ -31,12 +32,12 @@ const Enum = {
 	},
 	singer: {
 		status: {
-			unActive: 0,
+			block: 0,
 			active: 1,
-			block: 2,
+			inActive: 2,
 		},
 	},
-	attribute: {
+	topic: {
 		status: {
 			hidden: 0,
 			display: 1,

@@ -1,18 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const Browse = new Schema(
+const Topic = new Schema(
 	{
-		nameBrowse: {
+		topicName: {
 			type: String,
 			required: true,
-		},
-		imageBrowse: {
-			type: String,
-			required: true,
-		},
-		playlistId: {
-			type: [String],
 		},
 		status: {
 			type: Number,
@@ -24,4 +17,4 @@ const Browse = new Schema(
 	},
 );
 
-module.exports = mongoose.model('browse', Browse);
+module.exports = mongoose.model('topic', Topic);

@@ -1,18 +1,16 @@
-const ServiceCommon = require('../services/common');
 const Enum = require('../data/enum');
 const logger = require('../utils/logger');
-const Attribute = require('../models/attribute-model ');
+const Topic = require('../models/topic-model');
 
-class AttributeController {
-	//[PUT]-[/attribute]
+class TopicController {
+	//[PUT]-[/Topic]
 	create(req, res, next) {
 		const dataBody = req.body;
-		const attribute = new Attribute({
+		const Topic = new Topic({
 			...dataBody,
-			status: Enum.attribute.status.display,
+			status: Enum.topic.status.display,
 		});
-		attribute
-			.save()
+		Topic.save()
 			.then(() => {
 				res.json({
 					...Enum.response.success,
@@ -26,15 +24,15 @@ class AttributeController {
 			});
 	}
 
-	//[GET]-[/attribute]
+	//[GET]-[/Topic]
 	get(req, res, next) {
-		Attribute.find({ status: Enum.attribute.status.display })
-			.then((attributes) => {
+		Topic.find({ status: Enum.topic.status.display })
+			.then((topic) => {
 				res.json({
 					...Enum.response.success,
 					data: {
-						list: attributes,
-						total: attributes.length,
+						list: topic,
+						total: topic.length,
 					},
 				});
 			})
@@ -50,7 +48,7 @@ class AttributeController {
 	update(req, res, next) {
 		const { id, ...rest } = req.body;
 
-		Attribute.findByIdAndUpdate(id, rest)
+		Topic.findByIdAndUpdate(id, rest)
 			.then((browseItem) => {
 				res.json({
 					...Enum.response.success,
@@ -71,7 +69,7 @@ class AttributeController {
 	updateStatus(req, res, next) {
 		const { id, status } = req.body;
 
-		Attribute.findByIdAndUpdate(id, { status })
+		Topic.findByIdAndUpdate(id, { status })
 			.then(() => {
 				res.json({
 					...Enum.response.success,
@@ -84,34 +82,6 @@ class AttributeController {
 				});
 			});
 	}
-
-	//[POST]-[/browse/uploadImage]
-	uploadImage(req, res, next) {
-		logger.info('Controller browse execute upload image username');
-		logger.debug('Controller browse get request from client', req.file);
-
-		ServiceCommon.uploadImage(req.file.path, {
-			folder: 'attribute/image',
-			use_filename: true,
-		})
-			.then((data) => {
-				res.json({
-					...Enum.response.success,
-					data: {
-						link: data.url,
-						name: data.original_filename,
-						createAt: new Date(data.created_at).getTime(),
-					},
-				});
-			})
-			.catch((error) => {
-				logger.error(error);
-
-				res.json({
-					...Enum.response.systemError,
-				});
-			});
-	}
 }
 
-module.exports = new AttributeController();
+module.exports = new TopicController();

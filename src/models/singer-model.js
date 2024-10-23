@@ -29,6 +29,9 @@ const Singer = new Schema(
 			type: Number,
 			required: true,
 		},
+		browseId: {
+			type: [String],
+		},
 	},
 	{
 		timestamps: true,

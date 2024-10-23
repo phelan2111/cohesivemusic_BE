@@ -2,9 +2,9 @@ const logger = require('../utils/logger');
 const Enum = require('../data/enum');
 const helper = require('../utils/helper');
 
-class BrowseValidator {
+class GenreValidator {
 	hasFullValuesCreate(req, res, next) {
-		logger.info('UserValidator execute hasFullValues');
+		logger.info('GenreValidator execute hasFullValues');
 		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['nameBrowse', 'imageBrowse']);
 		if (isEveryHasValue) {
 			next();
@@ -15,7 +15,7 @@ class BrowseValidator {
 		}
 	}
 	hasFullValuesUpdate(req, res, next) {
-		logger.info('UserValidator execute hasFullValues');
+		logger.info('GenreValidator execute hasFullValues');
 		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['nameBrowse', 'imageBrowse', 'id']);
 		if (isEveryHasValue) {
 			next();
@@ -26,7 +26,7 @@ class BrowseValidator {
 		}
 	}
 	hasFullValuesHidden(req, res, next) {
-		logger.info('UserValidator execute hasFullValues');
+		logger.info('GenreValidator execute hasFullValues');
 		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['id', 'status']);
 		if (isEveryHasValue) {
 			next();
@@ -38,4 +38,4 @@ class BrowseValidator {
 	}
 }
 
-module.exports = new BrowseValidator();
+module.exports = new GenreValidator();

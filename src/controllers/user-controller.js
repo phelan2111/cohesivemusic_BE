@@ -114,7 +114,7 @@ class UserController {
 				firstName,
 				lastName,
 				email,
-				status: Enum.user.status.active,
+				status: Enum.user.status.inActive,
 				role: Enum.user.role.normal,
 			});
 			userScheme
@@ -147,7 +147,7 @@ class UserController {
 				1800,
 			);
 
-			User.findByIdAndUpdate(id, { token })
+			User.findByIdAndUpdate(id, { token, status: Enum.user.status.active })
 				.then((user) => {
 					const response = {
 						email: user.email,

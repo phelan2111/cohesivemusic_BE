@@ -1,12 +1,12 @@
 const userRouter = require('./user-router')
-const BrowseRouter = require('./browse-router');
-const AttributeRouter = require('./attribute-router');
+const GenreRouter = require('./genre-router');
+const TopicRouter = require('./topic-router');
 const SingerRouter = require('./singer-router');
 
 function route(app) {
 	app.use('/user', userRouter);
-	app.use('/browse', BrowseRouter);
-	app.use('/attribute', AttributeRouter);
+	app.use('/genre', GenreRouter);
+	app.use('/topic', TopicRouter);
 	app.use('/singer', SingerRouter);
 }
 

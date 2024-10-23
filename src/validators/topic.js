@@ -2,10 +2,10 @@ const logger = require('../utils/logger');
 const Enum = require('../data/enum');
 const helper = require('../utils/helper');
 
-class AttributeValidator {
+class TopicValidator {
 	hasFullValuesCreate(req, res, next) {
-		logger.info('AttributeValidator execute hasFullValuesCreate');
-		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['attributeName', 'attributeImage']);
+		logger.info('TopicValidator execute hasFullValuesCreate');
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['topicName']);
 		if (isEveryHasValue) {
 			next();
 		} else {
@@ -15,8 +15,8 @@ class AttributeValidator {
 		}
 	}
 	hasFullValuesUpdate(req, res, next) {
-		logger.info('AttributeValidator execute hasFullValuesUpdate');
-		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['attributeName', 'attributeImage', 'id']);
+		logger.info('TopicValidator execute hasFullValuesUpdate');
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['topicName', 'id']);
 		if (isEveryHasValue) {
 			next();
 		} else {
@@ -26,7 +26,7 @@ class AttributeValidator {
 		}
 	}
 	hasFullValuesHidden(req, res, next) {
-		logger.info('AttributeValidator execute hasFullValuesHidden');
+		logger.info('TopicValidator execute hasFullValuesHidden');
 		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['id', 'status']);
 		if (isEveryHasValue) {
 			next();
@@ -38,4 +38,4 @@ class AttributeValidator {
 	}
 }
 
-module.exports = new AttributeValidator();
+module.exports = new TopicValidator();
