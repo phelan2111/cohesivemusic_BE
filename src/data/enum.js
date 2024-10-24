@@ -43,6 +43,12 @@ const Enum = {
 			display: 1,
 		},
 	},
+	genre: {
+		status: {
+			hidden: 0,
+			display: 1,
+		},
+	},
 	response: {
 		success: {
 			code: '200',

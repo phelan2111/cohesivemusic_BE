@@ -9,7 +9,7 @@ class GenreController {
 		const dataBody = req.body;
 		const genre = new Genre({
 			...dataBody,
-			status: Enum.attribute.status.display,
+			status: Enum.genre.status.display,
 		});
 		genre
 			.save()

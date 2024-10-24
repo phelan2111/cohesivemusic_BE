@@ -6,11 +6,12 @@ class TopicController {
 	//[PUT]-[/Topic]
 	create(req, res, next) {
 		const dataBody = req.body;
-		const Topic = new Topic({
+		const topic = new Topic({
 			...dataBody,
 			status: Enum.topic.status.display,
 		});
-		Topic.save()
+		topic
+			.save()
 			.then(() => {
 				res.json({
 					...Enum.response.success,
