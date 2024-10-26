@@ -17,4 +17,6 @@ const Topic = new Schema(
 	},
 );
 
+Topic.index({ topicName: 'text' });
+
 module.exports = mongoose.model('topic', Topic);

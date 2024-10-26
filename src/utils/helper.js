@@ -58,6 +58,26 @@ class Helper {
 			logger.error('Helper execute convertTime error', error);
 		}
 	}
+
+	cleanObject(obj) {
+		for (const propName in obj) {
+			if (Helper.isEmpty(obj[propName])) {
+				delete obj[propName];
+			}
+		}
+		return obj;
+	}
+
+	search(search, query) {
+		if (this.isEmpty(search)) {
+			return query;
+		}
+
+		return {
+			...query,
+			$text: { $search: search },
+		};
+	}
 }
 
 module.exports = new Helper();

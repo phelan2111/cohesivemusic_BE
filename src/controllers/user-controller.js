@@ -183,21 +183,35 @@ class UserController {
 
 	getList(req, res, next) {
 		logger.info('Controller user execute getList');
-		User.find({}).then((dataItem) => {
-			const data = dataItem.map((i) => {
-				const user = i;
-				user.token = '';
-				delete user.token;
-				return user;
-			});
-			res.json({
-				...Enum.response.success,
-				data: {
-					total: dataItem.length,
-					list: data,
-				},
-			});
+		const { from, limit, status = Enum.topic.status.display, search = '', ...rest } = req.query;
+
+		const query = Helper.search(search, {
+			status,
 		});
+
+		User.find(query)
+			.limit(limit)
+			.skip(from)
+			.sort(rest)
+			.then((dataItem) => {
+				const list = dataItem.map((i) => {
+					const user = i;
+					user.token = '';
+					delete user.token;
+					return user;
+				});
+				Topic.countDocuments(query)
+					.exec()
+					.then((total) => {
+						res.json({
+							...Enum.response.success,
+							data: {
+								total,
+								list,
+							},
+						});
+					});
+			});
 	}
 }
 module.exports = new UserController();

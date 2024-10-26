@@ -67,6 +67,10 @@ const Enum = {
 			code: '405_SYSTEM',
 			mess: 'System Error',
 		},
+		sort: {
+			desc: -1,
+			asc: 1,
+		},
 	},
 };
 

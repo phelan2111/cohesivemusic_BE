@@ -28,15 +28,28 @@ class GenreController {
 
 	//[GET]-[/genre]
 	get(req, res, next) {
-		Genre.find({ status: Enum.attribute.status.display })
+		const { from, limit, status = Enum.genre.status.display, search = '', ...rest } = req.query;
+
+		const query = Helper.search(search, {
+			status,
+		});
+
+		Genre.find(query)
+			.limit(limit)
+			.skip(from)
+			.sort(rest)
 			.then((genres) => {
-				res.json({
-					...Enum.response.success,
-					data: {
-						list: genres,
-						total: genres.length,
-					},
-				});
+				Topic.countDocuments(query)
+					.exec()
+					.then((total) => {
+						res.json({
+							...Enum.response.success,
+							data: {
+								list: genres,
+								total,
+							},
+						});
+					});
 			})
 			.catch((error) => {
 				logger.error(error);

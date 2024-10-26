@@ -1,6 +1,7 @@
 const Enum = require('../data/enum');
 const logger = require('../utils/logger');
 const Topic = require('../models/topic-model');
+const Helper = require('../utils/helper');
 
 class TopicController {
 	//[PUT]-[/Topic]
@@ -27,15 +28,28 @@ class TopicController {
 
 	//[GET]-[/Topic]
 	get(req, res, next) {
-		Topic.find({ status: Enum.topic.status.display })
+		const { from, limit, status = Enum.topic.status.display, search = '', ...rest } = req.query;
+
+		const query = Helper.search(search, {
+			status,
+		});
+
+		Topic.find(query)
+			.limit(limit)
+			.skip(from)
+			.sort(rest)
 			.then((topic) => {
-				res.json({
-					...Enum.response.success,
-					data: {
-						list: topic,
-						total: topic.length,
-					},
-				});
+				Topic.countDocuments(query)
+					.exec()
+					.then((total) => {
+						res.json({
+							...Enum.response.success,
+							data: {
+								list: topic,
+								total,
+							},
+						});
+					});
 			})
 			.catch((error) => {
 				logger.error(error);
