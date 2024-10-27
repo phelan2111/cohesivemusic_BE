@@ -8,5 +8,6 @@ router.put('/', CommonValidator.isLoggedIn, TopicValidator.hasFullValuesCreate, 
 router.post('/', CommonValidator.isLoggedIn, TopicValidator.hasFullValuesUpdate, Topic.update);
 router.delete('/', CommonValidator.isLoggedIn, TopicValidator.hasFullValuesHidden, Topic.updateStatus);
 router.get('/', CommonValidator.isLoggedIn, Topic.get);
+router.get('/details', CommonValidator.isLoggedIn, TopicValidator.hasFullValuesGetDetails, Topic.getDetails);
 
 module.exports = router;

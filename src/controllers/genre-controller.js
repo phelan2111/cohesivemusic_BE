@@ -2,6 +2,7 @@ const ServiceCommon = require('../services/common');
 const Enum = require('../data/enum');
 const logger = require('../utils/logger');
 const Genre = require('../models/genre-model');
+const Helper = require('../utils/helper');
 
 class GenreController {
 	//[PUT]-[/genre]
@@ -39,7 +40,7 @@ class GenreController {
 			.skip(from)
 			.sort(rest)
 			.then((genres) => {
-				Topic.countDocuments(query)
+				Genre.countDocuments(query)
 					.exec()
 					.then((total) => {
 						res.json({

@@ -92,6 +92,10 @@ class UserController {
 								),
 							},
 						});
+					}else {
+						res.json({
+							...Enum.response.otpNotMatch,
+						});
 					}
 				})
 				.catch(() => {
@@ -183,7 +187,7 @@ class UserController {
 
 	getList(req, res, next) {
 		logger.info('Controller user execute getList');
-		const { from, limit, status = Enum.topic.status.display, search = '', ...rest } = req.query;
+		const { from, limit, status = Enum.user.status.active, search = '', ...rest } = req.query;
 
 		const query = Helper.search(search, {
 			status,
@@ -200,7 +204,7 @@ class UserController {
 					delete user.token;
 					return user;
 				});
-				Topic.countDocuments(query)
+				User.countDocuments(query)
 					.exec()
 					.then((total) => {
 						res.json({

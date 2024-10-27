@@ -64,11 +64,11 @@ class TopicController {
 		const { id, ...rest } = req.body;
 
 		Topic.findByIdAndUpdate(id, rest)
-			.then((browseItem) => {
+			.then((topicItem) => {
 				res.json({
 					...Enum.response.success,
 					data: {
-						id: browseItem._id.toString(),
+						id: topicItem._id.toString(),
 					},
 				});
 			})
@@ -82,12 +82,31 @@ class TopicController {
 
 	//[DELETE]-[/browse]
 	updateStatus(req, res, next) {
-		const { id, status } = req.body;
+		const { topicId, status } = req.body;
 
-		Topic.findByIdAndUpdate(id, { status })
+		Topic.findByIdAndUpdate({ _id: topicId}, { status })
 			.then(() => {
 				res.json({
 					...Enum.response.success,
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+	}
+
+	//[POST]-[/browse]
+	getDetails(req, res, next) {
+		const { topicId } = req.query;
+
+		Topic.findOne({ _id: topicId })
+			.then((browseItem) => {
+				res.json({
+					...Enum.response.success,
+					data: browseItem,
 				});
 			})
 			.catch((error) => {

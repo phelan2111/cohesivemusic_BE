@@ -5,11 +5,9 @@ const User = new Schema(
 	{
 		email: {
 			type: String,
-			unique: true,
 		},
 		phone: {
 			type: Number,
-			unique: true,
 		},
 		password: {
 			type: String,
@@ -49,4 +47,5 @@ const User = new Schema(
 	},
 );
 
+User.index({ firstName: 'text', lastName: 'text', email: 'text' });
 module.exports = mongoose.model('user', User);

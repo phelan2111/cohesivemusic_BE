@@ -27,7 +27,18 @@ class TopicValidator {
 	}
 	hasFullValuesHidden(req, res, next) {
 		logger.info('TopicValidator execute hasFullValuesHidden');
-		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['id', 'status']);
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['topicId', 'status']);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+	hasFullValuesGetDetails(req, res, next) {
+		logger.info('TopicValidator execute hasFullValuesGetDetails');
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.query, ['topicId']);
 		if (isEveryHasValue) {
 			next();
 		} else {

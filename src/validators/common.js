@@ -8,7 +8,7 @@ class CommonValidator {
 			logger.info('UserValidator execute isLoggedIn success');
 			const { id } = req.user;
 			User.findById(id).then((user) => {
-				const hasLoggedAtOtherPlace = req.headers.token === user.token;
+				const hasLoggedAtOtherPlace = req.headers.token === user?.token;
 				if (hasLoggedAtOtherPlace) {
 					next();
 				} else {
@@ -17,6 +17,24 @@ class CommonValidator {
 					});
 				}
 			});
+		} else {
+			logger.info('UserValidator execute isLoggedIn do not token');
+			res.json({
+				...Enum.response.unauthorized,
+			});
+		}
+	}
+	isValidToken(req, res, next) {
+		if (req.user) {
+			logger.info('UserValidator execute isLoggedIn success');
+			const hasToken = req.headers.token;
+			if (hasToken) {
+				next();
+			} else {
+				res.json({
+					...Enum.response.unauthorized,
+				});
+			}
 		} else {
 			logger.info('UserValidator execute isLoggedIn do not token');
 			res.json({

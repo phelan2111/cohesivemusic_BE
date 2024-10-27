@@ -24,4 +24,6 @@ const Genre = new Schema(
 	},
 );
 
+Genre.index({ nameGenre: 'text' });
+
 module.exports = mongoose.model('genre', Genre);
