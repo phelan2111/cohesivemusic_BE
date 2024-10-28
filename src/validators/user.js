@@ -27,6 +27,18 @@ class UserValidator {
 			});
 		}
 	}
+	hasFullValuesDetails(req, res, next) {
+		logger.info('UserValidator execute hasFullValues');
+		const isEveryHasValue = !Helper.isEmptyObjectByValidate(req.query, ['userId']);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			logger.info('UserValidator not hasFullValues');
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
 }
 
 module.exports = new UserValidator();

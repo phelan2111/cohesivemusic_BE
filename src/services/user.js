@@ -52,5 +52,21 @@ class ServiceUser {
 				});
 			});
 	}
+	convertResponseGenre(dataItem) {
+		return {
+			createdAt: dataItem.createdAt,
+			email: dataItem.email,
+			firstName: dataItem.firstName,
+			lastName: dataItem.lastName,
+			role: dataItem.role,
+			status: dataItem.status,
+			updatedAt: dataItem.updatedAt,
+			userId: dataItem._id,
+			avatar: dataItem?.avatar,
+			address: dataItem?.address,
+			gender: dataItem?.gender,
+			cover: dataItem?.cover,
+		};
+	}
 }
 module.exports = new ServiceUser();

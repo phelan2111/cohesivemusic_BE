@@ -41,6 +41,9 @@ const User = new Schema(
 		avatar: {
 			type: String,
 		},
+		cover: {
+			type: String,
+		},
 	},
 	{
 		timestamps: true,

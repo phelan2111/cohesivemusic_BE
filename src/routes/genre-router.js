@@ -10,5 +10,5 @@ router.put('/', CommonValidator.isLoggedIn, GenreValidator.hasFullValuesCreate, 
 router.post('/', CommonValidator.isLoggedIn, GenreValidator.hasFullValuesUpdate, GenreController.update);
 router.delete('/', CommonValidator.isLoggedIn, GenreValidator.hasFullValuesHidden, GenreController.updateStatus);
 router.get('/', CommonValidator.isLoggedIn, GenreController.get);
-
+router.get('/details', CommonValidator.isLoggedIn, GenreValidator.hasFullValuesGetDetails, GenreController.getDetails);
 module.exports = router;

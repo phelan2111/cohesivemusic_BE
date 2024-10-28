@@ -2,6 +2,7 @@ const Enum = require('../data/enum');
 const logger = require('../utils/logger');
 const Topic = require('../models/topic-model');
 const Helper = require('../utils/helper');
+const ServiceTopic = require('../services/topic');
 
 class TopicController {
 	//[PUT]-[/Topic]
@@ -61,9 +62,9 @@ class TopicController {
 
 	//[POST]-[/browse]
 	update(req, res, next) {
-		const { id, ...rest } = req.body;
+		const { topicId, ...rest } = req.body;
 
-		Topic.findByIdAndUpdate(id, rest)
+		Topic.findByIdAndUpdate(topicId, rest)
 			.then((topicItem) => {
 				res.json({
 					...Enum.response.success,
@@ -84,7 +85,7 @@ class TopicController {
 	updateStatus(req, res, next) {
 		const { topicId, status } = req.body;
 
-		Topic.findByIdAndUpdate({ _id: topicId}, { status })
+		Topic.findByIdAndUpdate({ _id: topicId }, { status })
 			.then(() => {
 				res.json({
 					...Enum.response.success,
@@ -98,15 +99,15 @@ class TopicController {
 			});
 	}
 
-	//[POST]-[/browse]
+	//[POST]-[/browse/topic/details]
 	getDetails(req, res, next) {
 		const { topicId } = req.query;
 
 		Topic.findOne({ _id: topicId })
-			.then((browseItem) => {
+			.then((topicItem) => {
 				res.json({
 					...Enum.response.success,
-					data: browseItem,
+					data: ServiceTopic.convertResponseTopic(topicItem),
 				});
 			})
 			.catch((error) => {

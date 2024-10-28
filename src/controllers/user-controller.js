@@ -4,6 +4,8 @@ const logger = require('../utils/logger');
 const Helper = require('../utils/helper');
 const Enum = require('../data/enum');
 const ServiceCommon = require('../services/common');
+const ServiceUser = require('../services/user');
+const config = require('../config');
 
 class UserController {
 	verifyUsername(req, res, next) {
@@ -92,7 +94,7 @@ class UserController {
 								),
 							},
 						});
-					}else {
+					} else {
 						res.json({
 							...Enum.response.otpNotMatch,
 						});
@@ -120,6 +122,8 @@ class UserController {
 				email,
 				status: Enum.user.status.inActive,
 				role: Enum.user.role.normal,
+				cover: config.development.defaultImage.cover,
+				avatar: config.development.defaultImage.avatar,
 			});
 			userScheme
 				.save()
@@ -178,11 +182,23 @@ class UserController {
 		}
 	}
 
-	information(req, res, next) {
-		res.json({
-			email: 'Ly minh tan',
-			password: '$2y$13$tck7GmMrUMhLGPO5Qn4NAu53nAVa..kJqTq/RiNZ28N/l1P3Nd.TK',
-		});
+	//[POST]-[/user/details]
+	details(req, res, next) {
+		const { userId } = req.query;
+
+		User.findOne({ _id: userId })
+			.then((userItem) => {
+				res.json({
+					...Enum.response.success,
+					data: ServiceUser.convertResponseGenre(userItem),
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
 	}
 
 	getList(req, res, next) {

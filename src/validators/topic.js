@@ -16,7 +16,7 @@ class TopicValidator {
 	}
 	hasFullValuesUpdate(req, res, next) {
 		logger.info('TopicValidator execute hasFullValuesUpdate');
-		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['topicName', 'id']);
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['topicName', 'topicId']);
 		if (isEveryHasValue) {
 			next();
 		} else {

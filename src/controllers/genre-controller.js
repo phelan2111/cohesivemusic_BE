@@ -3,6 +3,8 @@ const Enum = require('../data/enum');
 const logger = require('../utils/logger');
 const Genre = require('../models/genre-model');
 const Helper = require('../utils/helper');
+const ServiceTopic = require('../services/topic');
+const ServiceGenre = require('../services/genre');
 
 class GenreController {
 	//[PUT]-[/genre]
@@ -62,9 +64,9 @@ class GenreController {
 
 	//[POST]-[/genre]
 	update(req, res, next) {
-		const { id, ...rest } = req.body;
+		const { genreId, ...rest } = req.body;
 
-		Genre.findByIdAndUpdate(id, rest)
+		Genre.findByIdAndUpdate(genreId, rest)
 			.then((genreItem) => {
 				res.json({
 					...Enum.response.success,
@@ -81,9 +83,9 @@ class GenreController {
 
 	//[DELETE]-[/genre]
 	updateStatus(req, res, next) {
-		const { id, status } = req.body;
+		const { genreId, status } = req.body;
 
-		Genre.findByIdAndUpdate(id, { status })
+		Genre.findByIdAndUpdate(genreId, { status })
 			.then(() => {
 				res.json({
 					...Enum.response.success,
@@ -119,6 +121,30 @@ class GenreController {
 			.catch((error) => {
 				logger.error(error);
 
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+	}
+
+	//[POST]-[/browse/genre/details]
+	getDetails(req, res, next) {
+		const { genreId } = req.query;
+
+		Genre.findOne({ _id: genreId })
+			.then((genreItem) => {
+				ServiceTopic.getTopicDetailsByTopicId(genreItem.topicId).then((topicItem) => {
+					res.json({
+						...Enum.response.success,
+						data: {
+							...ServiceGenre.convertResponseGenre(genreItem),
+							topic: ServiceTopic.convertResponseTopic(topicItem),
+						},
+					});
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
 				res.json({
 					...Enum.response.systemError,
 				});

@@ -11,8 +11,8 @@ const Genre = new Schema(
 			type: String,
 			required: true,
 		},
-		topicIdList: {
-			type: [String],
+		topicId: {
+			type: String,
 		},
 		status: {
 			type: Number,

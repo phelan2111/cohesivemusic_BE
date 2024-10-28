@@ -20,5 +20,9 @@ module.exports = {
 			apiKey: process.env.API_KEY,
 			apiSecret: process.env.API_SECRET,
 		},
+		defaultImage: {
+			cover: process.env.COVER_DEFAULT,
+			avatar: process.env.AVATAR_DEFAULT,
+		},
 	},
 };

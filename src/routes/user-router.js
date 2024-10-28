@@ -9,7 +9,7 @@ router.post('/register', CommonValidator.isValidToken, UserValidator.hasFullValu
 router.post('/verifyUsername', UserController.verifyUsername);
 router.post('/verifyOTP', CommonValidator.isValidToken, UserController.verifyOTP);
 router.post('/login', UserValidator.hasFullValuesLogin, ServiceUser.comparePassword, UserController.login);
-router.put('/information', CommonValidator.isLoggedIn, UserController.information);
 router.get('/', CommonValidator.isLoggedIn, UserController.getList);
+router.get('/details', CommonValidator.isLoggedIn, UserValidator.hasFullValuesDetails, UserController.details);
 
 module.exports = router;
