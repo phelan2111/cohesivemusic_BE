@@ -61,7 +61,7 @@ class Helper {
 
 	cleanObject(obj) {
 		for (const propName in obj) {
-			if (Helper.isEmpty(obj[propName])) {
+			if (this.isEmpty(obj[propName])) {
 				delete obj[propName];
 			}
 		}

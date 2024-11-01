@@ -1,23 +1,42 @@
 const ServiceCommon = require('../services/common');
+const ServiceArtist = require('../services/artist');
 const Enum = require('../data/enum');
 const logger = require('../utils/logger');
 const Singer = require('../models/singer-model');
+const GenreOfSinger = require('../models/genreOfSinger-model');
 
 class SingerController {
 	//[PUT]-[/singer]
 	create(req, res, next) {
-		const dataBody = req.body;
+		const { genres, ...rest } = req.body;
 		const singer = new Singer({
-			...dataBody,
+			...rest,
 			followers: 0,
 			status: Enum.singer.status.inActive,
 		});
 		singer
 			.save()
-			.then(() => {
-				res.json({
-					...Enum.response.success,
+			.then((item) => {
+				const genreOfSing = new GenreOfSinger({
+					singerId: item._id,
+					genres,
 				});
+				genreOfSing
+					.save()
+					.then(() => {
+						res.json({
+							...Enum.response.success,
+							data: {
+								singerId: item._id,
+							},
+						});
+					})
+					.catch((error) => {
+						logger.error(error);
+						res.json({
+							...Enum.response.systemError,
+						});
+					});
 			})
 			.catch((error) => {
 				logger.error(error);
@@ -74,7 +93,7 @@ class SingerController {
 		logger.debug('Controller singer get request from client', req.file);
 
 		ServiceCommon.uploadImage(req.file.path, {
-			folder: 'singer/image',
+			folder: 'singer/image/avatar',
 			use_filename: true,
 		})
 			.then((data) => {
@@ -102,7 +121,7 @@ class SingerController {
 		logger.debug('Controller singer get request from client', req.files);
 		const promises = req.files.map(async (file) => {
 			return await ServiceCommon.uploadImage(file.path, {
-				folder: 'singer/image',
+				folder: 'singer/image/cover',
 				use_filename: true,
 			});
 		});
@@ -139,6 +158,31 @@ class SingerController {
 					data: {
 						id: singerItem._id.toString(),
 					},
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+	}
+
+	//[GET]-[/singer/details]
+	details(req, res, next) {
+		const { artistId } = req.query;
+
+		Singer.findOne({ _id: artistId })
+			.then((singerItem) => {
+				const dataResponse = ServiceArtist.convertResponseArtist(singerItem);
+				GenreOfSinger.findById(artistId).then((genreOfSingerItem) => {
+					res.json({
+						...Enum.response.success,
+						data: {
+							...dataResponse,
+							genres: genreOfSingerItem.genres,
+						},
+					});
 				});
 			})
 			.catch((error) => {

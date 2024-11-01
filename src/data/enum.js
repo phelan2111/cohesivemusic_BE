@@ -32,7 +32,7 @@ const Enum = {
 	},
 	singer: {
 		status: {
-			block: 0,
+			lock: 0,
 			active: 1,
 			inActive: 2,
 		},

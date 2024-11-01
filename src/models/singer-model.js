@@ -22,15 +22,12 @@ const Singer = new Schema(
 		followers: {
 			type: Number,
 		},
-		contact: {
+		socials: {
 			type: Object,
 		},
 		status: {
 			type: Number,
 			required: true,
-		},
-		browseId: {
-			type: [String],
 		},
 	},
 	{

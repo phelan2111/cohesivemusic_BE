@@ -5,7 +5,7 @@ const helper = require('../utils/helper');
 class SingerValidator {
 	hasFullValuesCreate(req, res, next) {
 		logger.info('SingerValidator execute hasFullValuesCreate');
-		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['singerName', 'singerAvatar', 'singerCover', 'singerDescription']);
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['singerName', 'singerAvatar', 'singerCover', 'singerDescription', 'genres']);
 		if (isEveryHasValue) {
 			next();
 		} else {
@@ -24,6 +24,18 @@ class SingerValidator {
 			'singerDescription',
 			'id',
 		]);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			logger.error('Validator invalid');
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+	hasFullValuesDetails(req, res, next) {
+		logger.info('SingerValidator execute hasFullValuesDetails');
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.query, ['artistId']);
 		if (isEveryHasValue) {
 			next();
 		} else {

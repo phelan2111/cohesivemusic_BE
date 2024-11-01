@@ -31,11 +31,13 @@ class GenreController {
 
 	//[GET]-[/genre]
 	get(req, res, next) {
-		const { from, limit, status = Enum.genre.status.display, search = '', ...rest } = req.query;
+		const { from, limit, status = '', search = '', ...rest } = req.query;
 
-		const query = Helper.search(search, {
-			status,
-		});
+		const query = Helper.cleanObject(
+			Helper.search(search, {
+				status,
+			}),
+		);
 
 		Genre.find(query)
 			.limit(limit)
