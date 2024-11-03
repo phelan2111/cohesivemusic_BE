@@ -4,6 +4,8 @@ const Enum = require('../data/enum');
 const logger = require('../utils/logger');
 const Singer = require('../models/singer-model');
 const GenreOfSinger = require('../models/genreOfSinger-model');
+const ServiceGenre = require('../services/genre');
+const Helper = require('../utils/helper');
 
 class SingerController {
 	//[PUT]-[/singer]
@@ -48,7 +50,15 @@ class SingerController {
 
 	//[GET]-[/singer]
 	get(req, res, next) {
-		Singer.find({})
+		const { from, limit, status = Enum.singer.status.active, search = '', ...rest } = req.query;
+		const query = Helper.search(search, {
+			status,
+		});
+
+		Singer.find(query)
+			.limit(limit)
+			.skip(from)
+			.sort(rest)
 			.then((singers) => {
 				res.json({
 					...Enum.response.success,
@@ -68,16 +78,25 @@ class SingerController {
 
 	//[POST]-[/singer]
 	update(req, res, next) {
-		const { id, ...rest } = req.body;
+		const { singerId, ...rest } = req.body;
 
-		Singer.findByIdAndUpdate(id, rest)
+		Singer.findByIdAndUpdate(singerId, rest)
 			.then((singerItem) => {
-				res.json({
-					...Enum.response.success,
-					data: {
-						id: singerItem._id.toString(),
-					},
-				});
+				GenreOfSinger.findOneAndUpdate({ singerId }, { genres: rest.genres })
+					.then(() => {
+						res.json({
+							...Enum.response.success,
+							data: {
+								id: singerItem._id.toString(),
+							},
+						});
+					})
+					.catch(() => {
+						logger.error(error);
+						res.json({
+							...Enum.response.systemError,
+						});
+					});
 			})
 			.catch((error) => {
 				logger.error(error);
@@ -149,9 +168,9 @@ class SingerController {
 
 	//[DELETE]-[/singer]
 	updateStatus(req, res, next) {
-		const { id, status } = req.body;
+		const { singerId, status } = req.body;
 
-		Singer.findByIdAndUpdate(id, { status })
+		Singer.findByIdAndUpdate(singerId, { status })
 			.then((singerItem) => {
 				res.json({
 					...Enum.response.success,
@@ -175,12 +194,12 @@ class SingerController {
 		Singer.findOne({ _id: artistId })
 			.then((singerItem) => {
 				const dataResponse = ServiceArtist.convertResponseArtist(singerItem);
-				GenreOfSinger.findById(artistId).then((genreOfSingerItem) => {
+				GenreOfSinger.findOne({ singerId: artistId }).then((genreOfSingerItem) => {
 					res.json({
 						...Enum.response.success,
 						data: {
 							...dataResponse,
-							genres: genreOfSingerItem.genres,
+							genres: genreOfSingerItem.genres.map((i) => ServiceGenre.convertResponseGenre(i)),
 						},
 					});
 				});

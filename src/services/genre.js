@@ -1,7 +1,7 @@
 class ServiceGenre {
 	convertResponseGenre(dataItem) {
 		return {
-			genreId: dataItem._id,
+			genreId: dataItem.genreId,
 			nameGenre: dataItem.nameGenre,
 			imageGenre: dataItem.imageGenre,
 			status: dataItem.status,

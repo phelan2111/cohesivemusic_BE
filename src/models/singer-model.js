@@ -34,5 +34,6 @@ const Singer = new Schema(
 		timestamps: true,
 	},
 );
+Singer.index({ singerName: 'text' });
 
 module.exports = mongoose.model('singer', Singer);
