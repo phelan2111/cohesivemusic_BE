@@ -70,6 +70,9 @@ class Helper {
 
 	search(search, query) {
 		if (this.isEmpty(search)) {
+			if (this.isEmpty(query)) {
+				return {};
+			}
 			return query;
 		}
 

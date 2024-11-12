@@ -11,7 +11,6 @@ class SongValidator {
 			'songDescription',
 			'singers',
 			'link',
-			'lyrics',
 		]);
 		if (isEveryHasValue) {
 			next();
@@ -33,6 +32,18 @@ class SongValidator {
 			'lyrics',
 			'id',
 		]);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			logger.error('Validator invalid');
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+	hasFullValuesDetails(req, res, next) {
+		logger.info('SongValidator execute hasFullValuesUpdate');
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.query, ['songId']);
 		if (isEveryHasValue) {
 			next();
 		} else {

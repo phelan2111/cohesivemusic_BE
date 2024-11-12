@@ -15,22 +15,21 @@ const Song = new Schema(
 			type: String,
 			required: true,
 		},
-		singers: {
-			type: [String],
-			required: true,
-		},
 		link: {
 			type: String,
 			required: true,
 		},
 		lyrics: {
 			type: String,
+		},
+		typeSong: {
+			type: String,
+		},
+		status: {
+			type: Number,
 			required: true,
 		},
 		views: {
-			type: Number,
-		},
-		time: {
 			type: Number,
 		},
 	},
@@ -38,5 +37,8 @@ const Song = new Schema(
 		timestamps: true,
 	},
 );
+
+Song.index({ songName: 'text' });
+
 
 module.exports = mongoose.model('Song', Song);

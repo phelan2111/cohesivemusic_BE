@@ -50,10 +50,13 @@ class SingerController {
 
 	//[GET]-[/singer]
 	get(req, res, next) {
-		const { from, limit, status = Enum.singer.status.active, search = '', ...rest } = req.query;
-		const query = Helper.search(search, {
-			status,
-		});
+		const { from, limit, status, search = '', ...rest } = req.query;
+		const query = Helper.search(
+			search,
+			Helper.cleanObject({
+				status,
+			}),
+		);
 
 		Singer.find(query)
 			.limit(limit)

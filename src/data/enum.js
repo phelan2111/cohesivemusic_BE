@@ -49,6 +49,16 @@ const Enum = {
 			display: 1,
 		},
 	},
+	song: {
+		type: {
+			mp3: 0,
+			video: 1,
+		},
+		status: {
+			hidden: 0,
+			display: 1,
+		},
+	},
 	response: {
 		success: {
 			code: '200',

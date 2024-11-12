@@ -30,6 +30,9 @@ class ServiceCommon {
 	async uploadImage(formData, options, cb) {
 		return await cloudinary.v2.uploader.upload(formData, options, cb);
 	}
+	async uploadVideo(formData, options, cb) {
+		return await cloudinary.v2.uploader.upload(formData, { ...options, resource_type: 'video', chunk_size: 100000000 }, cb);
+	}
 }
 
 module.exports = new ServiceCommon();

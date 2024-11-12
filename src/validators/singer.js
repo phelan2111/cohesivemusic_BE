@@ -17,7 +17,7 @@ class SingerValidator {
 	}
 	hasFullValuesUpdate(req, res, next) {
 		logger.info('SingerValidator execute hasFullValuesUpdate');
-		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['singerId']);
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['singerId', 'status']);
 		if (isEveryHasValue) {
 			next();
 		} else {

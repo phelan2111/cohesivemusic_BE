@@ -1,21 +1,35 @@
 const ServiceCommon = require('../services/common');
+const ServiceSong = require('../services/song');
+const ServiceArtist = require('../services/artist');
 const Enum = require('../data/enum');
 const logger = require('../utils/logger');
 const Song = require('../models/song-model');
+const SingerOfSong = require('../models/singerOfSong-model');
+const Helper = require('../utils/helper');
 
 class SongController {
 	//[PUT]-[/song]
 	create(req, res, next) {
-		const dataBody = req.body;
+		const { singers, ...rest } = req.body;
 		const song = new Song({
-			...dataBody,
+			...rest,
 			views: 0,
+			status: Enum.song.status.display,
 		});
 		song
 			.save()
-			.then(() => {
-				res.json({
-					...Enum.response.success,
+			.then((item) => {
+				const genreOfSing = new SingerOfSong({
+					songId: item._id,
+					singers,
+				});
+				genreOfSing.save().then(() => {
+					res.json({
+						...Enum.response.success,
+						data: {
+							songId: item._id,
+						},
+					});
 				});
 			})
 			.catch((error) => {
@@ -28,12 +42,23 @@ class SongController {
 
 	//[GET]-[/song]
 	get(req, res, next) {
-		Song.find({})
+		const { from, limit, status, search = '', ...rest } = req.query;
+		const query = Helper.search(
+			search,
+			Helper.cleanObject({
+				status,
+			}),
+		);
+
+		Song.find(query)
+			.limit(limit)
+			.skip(from)
+			.sort(rest)
 			.then((songs) => {
 				res.json({
 					...Enum.response.success,
 					data: {
-						list: songs,
+						list: songs.map((i) => ServiceSong.convertResponseSong(i)),
 						total: songs.length,
 					},
 				});
@@ -67,7 +92,7 @@ class SongController {
 			});
 	}
 
-	//[POST]-[/browse/upload]
+	//[POST]-[/song/upload]
 	uploadImage(req, res, next) {
 		logger.info('Controller browse execute upload image username');
 		logger.debug('Controller browse get request from client', req.file);
@@ -100,8 +125,8 @@ class SongController {
 		logger.info('Controller browse execute upload image username');
 		logger.debug('Controller browse get request from client', req.file);
 
-		ServiceCommon.uploadImage(req.file.path, {
-			folder: 'song/image',
+		ServiceCommon.uploadVideo(req.file.path, {
+			folder: 'song/media',
 			use_filename: true,
 		})
 			.then((data) => {
@@ -117,6 +142,31 @@ class SongController {
 			.catch((error) => {
 				logger.error(error);
 
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+	}
+
+	//[GET]-[/song/details]
+	details(req, res, next) {
+		const { songId } = req.query;
+
+		Song.findOne({ _id: songId })
+			.then((songItem) => {
+				const dataResponse = ServiceSong.convertResponseSong(songItem);
+				SingerOfSong.findOne({ songId }).then((singerOfSongItem) => {
+					res.json({
+						...Enum.response.success,
+						data: {
+							...dataResponse,
+							singer: singerOfSongItem.singers.map((i) => ServiceArtist.convertResponseArtist(i)),
+						},
+					});
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
 				res.json({
 					...Enum.response.systemError,
 				});
