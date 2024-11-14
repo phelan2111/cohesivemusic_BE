@@ -10,6 +10,7 @@ router.post('/uploadMedia', upload.single('media'), Song.uploadMedia);
 router.put('/', CommonValidator.isLoggedIn, SongValidator.hasFullValuesCreate, Song.create);
 router.post('/', CommonValidator.isLoggedIn, SongValidator.hasFullValuesUpdate, Song.update);
 router.get('/', CommonValidator.isLoggedIn, Song.get);
+router.delete('/', CommonValidator.isLoggedIn, SongValidator.hasFullValuesUpdate, Song.updateStatus);
 router.get('/details', CommonValidator.isLoggedIn, SongValidator.hasFullValuesDetails, Song.details);
 
 

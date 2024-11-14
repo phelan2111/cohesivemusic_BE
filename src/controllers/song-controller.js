@@ -73,9 +73,29 @@ class SongController {
 
 	//[POST]-[/song]
 	update(req, res, next) {
-		const { id, ...rest } = req.body;
+		const { songId, ...rest } = req.body;
 
-		Song.findByIdAndUpdate(id, rest)
+		Song.findByIdAndUpdate(songId, rest)
+			.then((songItem) => {
+				res.json({
+					...Enum.response.success,
+					data: {
+						id: songItem._id.toString(),
+					},
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+	}
+	//[DELETE]-[/song]
+	updateStatus(req, res, next) {
+		const { songId, status } = req.body;
+
+		Song.findByIdAndUpdate(songId, { status })
 			.then((songItem) => {
 				res.json({
 					...Enum.response.success,

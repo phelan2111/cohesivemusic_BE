@@ -23,15 +23,7 @@ class SongValidator {
 	}
 	hasFullValuesUpdate(req, res, next) {
 		logger.info('SongValidator execute hasFullValuesUpdate');
-		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, [
-			'songName',
-			'image',
-			'songDescription',
-			'singers',
-			'link',
-			'lyrics',
-			'id',
-		]);
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['songId']);
 		if (isEveryHasValue) {
 			next();
 		} else {
