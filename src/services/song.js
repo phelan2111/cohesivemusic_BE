@@ -12,6 +12,7 @@ class ServiceSong {
 			songId: dataItem._id,
 			createdAt: dataItem.createdAt,
 			updatedAt: dataItem.updatedAt,
+			type: dataItem?.type,
 		};
 	}
 }

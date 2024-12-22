@@ -32,6 +32,10 @@ const Song = new Schema(
 		views: {
 			type: Number,
 		},
+		type: {
+			type: Number,
+			required: true,
+		},
 	},
 	{
 		timestamps: true,

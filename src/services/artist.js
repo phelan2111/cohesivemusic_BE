@@ -10,7 +10,7 @@ class ServiceArtist {
 			followers: dataItem.followers,
 			contact: dataItem.contact,
 			status: dataItem?.status,
-			singerId: dataItem._id,
+			singerId: dataItem.singerId,
 			socials: dataItem.socials,
 		};
 	}
