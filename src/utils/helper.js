@@ -81,6 +81,11 @@ class Helper {
 			$text: { $search: search },
 		};
 	}
+	findItem(dataItem, field, data) {
+		const index = dataItem.findIndex((item) => item?.[field] === data);
+		const isExist = index !== -1;
+		return { isExist, index };
+	}
 }
 
 module.exports = new Helper();

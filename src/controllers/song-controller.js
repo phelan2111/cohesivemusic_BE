@@ -6,6 +6,7 @@ const logger = require('../utils/logger');
 const Song = require('../models/song-model');
 const SingerOfSong = require('../models/singerOfSong-model');
 const Helper = require('../utils/helper');
+const helper = require('../utils/helper');
 
 class SongController {
 	//[PUT]-[/song]
@@ -55,12 +56,22 @@ class SongController {
 			.skip(from)
 			.sort(rest)
 			.then((songs) => {
-				res.json({
-					...Enum.response.success,
-					data: {
-						list: songs.map((i) => ServiceSong.convertResponseSong(i)),
-						total: songs.length,
-					},
+				SingerOfSong.find({}).then((singersOfSong) => {
+					const dataResponse = songs.map((i) => ServiceSong.convertResponseSong(i));
+					for (let i = 0; i < dataResponse.length; i++) {
+						const song = dataResponse[i];
+						const { index, isExist } = helper.findItem(singersOfSong, 'songId', song.songId.toString());
+						if (isExist) {
+							dataResponse[i].singers = singersOfSong[index].singers;
+						}
+					}
+					res.json({
+						...Enum.response.success,
+						data: {
+							list: dataResponse,
+							total: songs.length,
+						},
+					});
 				});
 			})
 			.catch((error) => {
