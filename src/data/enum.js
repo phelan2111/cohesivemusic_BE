@@ -59,6 +59,12 @@ const Enum = {
 			display: 1,
 		},
 	},
+	playList: {
+		status: {
+			hidden: 0,
+			display: 1,
+		},
+	},
 	response: {
 		success: {
 			code: '200',
