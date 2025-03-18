@@ -1,34 +1,57 @@
 const Playlist = require('../models/playlist-model');
+const SongOfPlaylist = require('../models/songOfPlaylist-model');
+const Song = require('../models/song-model');
 const Enum = require('../data/enum');
 const ServiceCommon = require('../services/common');
+const ServiceSong = require('../services/song');
 const logger = require('../utils/logger');
 
 class PlaylistController {
 	//[PUT]-[/playlist]
 	create(req, res, next) {
-		const { singers, ...rest } = req.body;
-		console.log('reqreqreqreqreqreqreqreqreq', req.user);
-		// const playList = new Playlist({
-		// 	...rest,
-		// 	viewSaves: 0,
-		// 	status: Enum.playList.status.display,
-		// });
-		// playList
-		// 	.save()
-		// 	.then((item) => {
-		// 		res.json({
-		// 			...Enum.response.success,
-		// 			data: {
-		// 				playlistId: item._id,
-		// 			},
-		// 		});
-		// 	})
-		// 	.catch((error) => {
-		// 		logger.error(error);
-		// 		res.json({
-		// 			...Enum.response.systemError,
-		// 		});
-		// 	});
+		const { singers, songs, ...rest } = req.body;
+
+		Song.find({ _id: { $in: songs } })
+			.then((itemsSong) => {
+				const convertSong = itemsSong.map((song) => ServiceSong.convertResponseSong(song));
+				const playList = new Playlist({
+					...rest,
+					viewSaves: 0,
+					userId: id,
+					songs,
+					status: Enum.playList.status.display,
+				});
+				playList
+					.save()
+					.then((item) => {
+						const songOfPlaylist = new SongOfPlaylist({
+							playlistId: item._id,
+							songs: convertSong,
+						});
+						songOfPlaylist.save().then(() => {
+							res.json({
+								...Enum.response.success,
+								data: {
+									playlistId: item._id,
+								},
+							});
+						});
+					})
+					.catch((error) => {
+						logger.error(error);
+						res.json({
+							...Enum.response.systemError,
+						});
+					});
+			})
+			.catch((error) => {
+				logger.error(error);
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+
+		const { id } = req.user;
 	}
 
 	//[POST]-[/playlist/uploadCover]

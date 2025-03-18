@@ -9,6 +9,10 @@ const SongOfPlaylist = new Schema(
 		},
 		songs: [
 			{
+				songId: {
+					type: String,
+					required: true,
+				},
 				songName: {
 					type: String,
 					required: true,
@@ -26,9 +30,6 @@ const SongOfPlaylist = new Schema(
 					required: true,
 				},
 				lyrics: {
-					type: String,
-				},
-				typeSong: {
 					type: String,
 				},
 				status: {

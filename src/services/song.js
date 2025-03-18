@@ -6,7 +6,6 @@ class ServiceSong {
 			songDescription: dataItem.songDescription,
 			link: dataItem.link,
 			lyrics: dataItem.lyrics,
-			typeSong: dataItem.typeSong,
 			views: dataItem.views,
 			status: dataItem.status,
 			songId: dataItem._id,

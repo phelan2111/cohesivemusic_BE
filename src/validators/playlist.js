@@ -3,7 +3,7 @@ const Enum = require('../data/enum');
 const helper = require('../utils/helper');
 
 class PlaylistValidators {
-	hasFullValuesCreate(res, req, next) {
+	hasFullValuesCreate(req, res, next) {
 		logger.info('PlaylistValidators execute hasFullValuesCreate');
 		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['namePlaylist', 'descriptionPlaylist', 'image', 'songs', 'theme']);
 		if (isEveryHasValue) {

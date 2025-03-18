@@ -22,9 +22,6 @@ const Song = new Schema(
 		lyrics: {
 			type: String,
 		},
-		typeSong: {
-			type: String,
-		},
 		status: {
 			type: Number,
 			required: true,
