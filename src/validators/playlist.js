@@ -14,6 +14,39 @@ class PlaylistValidators {
 			});
 		}
 	}
+	hasFullValuesGet(req, res, next) {
+		logger.info('PlaylistValidators execute hasFullValuesGet');
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.query, ['limit', 'from', 'status']);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+	hasFullValuesDetails(req, res, next) {
+		logger.info('PlaylistValidators execute hasFullValuesDetails');
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.query, ['playlistId']);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+	hasFullValuesUpdateStatus(req, res, next) {
+		logger.info('PlaylistValidators execute hasFullValuesUpdateStatus');
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['playlistId', 'status']);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
 }
 
 module.exports = new PlaylistValidators();
