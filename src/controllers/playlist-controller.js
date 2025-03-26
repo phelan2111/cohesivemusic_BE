@@ -1,5 +1,6 @@
 const Playlist = require('../models/playlist-model');
 const SongOfPlaylist = require('../models/songOfPlaylist-model');
+const SingerOfSong = require('../models/singerOfSong-model');
 const Song = require('../models/song-model');
 const Enum = require('../data/enum');
 const ServiceCommon = require('../services/common');
@@ -199,12 +200,23 @@ class PlaylistController {
 				.then((singerItem) => {
 					const dataResponse = ServicePlaylist.convertResponsePlaylist(singerItem);
 					SongOfPlaylist.findOne({ playlistId }).then((dataPlaylist) => {
-						res.json({
-							...Enum.response.success,
-							data: {
-								...dataResponse,
-								songs: dataPlaylist.songs.map((s) => ServiceSong.convertResponseSong(s)),
-							},
+						const songs = dataPlaylist.songs.map(async (s) => {
+							const singers = await SingerOfSong.findOne({ songId: s.songId }).then((dataSong) => {
+								return dataSong.singers.map((singer) => ServicePlaylist.convertResponseArtist(singer));
+							});
+							return {
+								...ServiceSong.convertResponseSong(s),
+								singers,
+							};
+						});
+						Promise.all(songs).then((data) => {
+							res.json({
+								...Enum.response.success,
+								data: {
+									...dataResponse,
+									songs: data,
+								},
+							});
 						});
 					});
 				})

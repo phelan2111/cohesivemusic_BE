@@ -11,6 +11,16 @@ class ServicePlaylist {
 			songs: dataItem.songs,
 			viewSaves: dataItem.viewSaves,
 			status: dataItem.status,
+			theme: dataItem.theme,
+		};
+	}
+	convertResponseArtist(dataItem) {
+		return {
+			singerName: dataItem.singerName,
+			singerAvatar: dataItem.singerAvatar,
+			singerId: dataItem._id,
+			status: dataItem?.status,
+			followers: dataItem.followers,
 		};
 	}
 }
