@@ -69,7 +69,6 @@ class PlaylistController {
 						.then(() => {
 							SongOfPlaylist.findOneAndUpdate({ playlistId }, { songs: convertSong })
 								.then((dataItem) => {
-									console.log('dataItem', dataItem);
 									res.json({
 										...Enum.response.success,
 										data: {
