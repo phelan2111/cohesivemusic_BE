@@ -167,6 +167,7 @@ class SongController {
 						link: data.url,
 						name: data.original_filename,
 						createAt: new Date(data.created_at).getTime(),
+						duration: Math.floor(data?.duration),
 					},
 				});
 			})

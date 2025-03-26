@@ -7,6 +7,9 @@ const Song = new Schema(
 			type: String,
 			required: true,
 		},
+		duration: {
+			type: Number,
+		},
 		image: {
 			type: String,
 			required: true,
