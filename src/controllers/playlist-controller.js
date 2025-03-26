@@ -65,10 +65,11 @@ class PlaylistController {
 			Song.find({ _id: { $in: rest.songs } })
 				.then((itemsSong) => {
 					const convertSong = itemsSong.map((song) => ServiceSong.convertResponseSong(song));
-					Playlist.findOneAndUpdate(playlistId, rest)
+					Playlist.findByIdAndUpdate(playlistId, rest)
 						.then(() => {
-							SongOfPlaylist.findOneAndUpdate(playlistId, { songs: convertSong })
-								.then(() => {
+							SongOfPlaylist.findOneAndUpdate({ playlistId }, { songs: convertSong })
+								.then((dataItem) => {
+									console.log('dataItem', dataItem);
 									res.json({
 										...Enum.response.success,
 										data: {
@@ -128,10 +129,10 @@ class PlaylistController {
 
 	//[DELETE]-[/playlist]
 	updateStatus(req, res, next) {
-		const { playlistId } = req.body;
+		const { playlistId, status } = req.body;
 
 		try {
-			Playlist.findOneAndUpdate({ _id: playlistId })
+			Playlist.findByIdAndUpdate(playlistId, { status })
 				.then(() => {
 					res.json({
 						...Enum.response.success,
@@ -206,6 +207,7 @@ class PlaylistController {
 							});
 							return {
 								...ServiceSong.convertResponseSong(s),
+								songId: s.songId,
 								singers,
 							};
 						});
