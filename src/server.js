@@ -9,19 +9,19 @@ const Cloudinary = require('./middleware/cloudinary');
 const BodyParser = require('./middleware/bodyParser');
 
 //body parser
-BodyParser(app);
+// BodyParser(app);
 
 //cloudinary
-Cloudinary();
+// Cloudinary();
 
 //morgan
-MorganMiddleware(app);
+// MorganMiddleware(app);
 
 // Cors
 app.use(cors());
 
 // Check auth
-AuthService(app);
+// AuthService(app);
 
 //todo: connect db
 // mongodb.connect();
