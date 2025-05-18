@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const route = require('./routes');
 const cors = require('cors');
-const mongodb = require('./data/mongoDB');
+// const mongodb = require('./data/mongoDB');
 const MorganMiddleware = require('./middleware/morgan');
 const AuthService = require('./middleware/auth');
 const Cloudinary = require('./middleware/cloudinary');
@@ -24,7 +24,7 @@ app.use(cors());
 AuthService(app);
 
 //todo: connect db
-mongodb.connect();
+// mongodb.connect();
 
 //Route
 route(app);
