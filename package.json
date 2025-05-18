@@ -9,6 +9,9 @@
     "server": "node src/server.js",
     "dev": "nodemon --inspect src/server.js eslint ."
   },
+  "engines": {
+    "node": "18.x"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
