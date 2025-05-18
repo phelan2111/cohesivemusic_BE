@@ -7,6 +7,7 @@ const MorganMiddleware = require('./middleware/morgan');
 const AuthService = require('./middleware/auth');
 const Cloudinary = require('./middleware/cloudinary');
 const BodyParser = require('./middleware/bodyParser');
+const Serverless = require('serverless-http');
 
 //body parser
 BodyParser(app);
@@ -29,6 +30,8 @@ mongodb.connect();
 //Route
 route(app);
 
-app.listen(8000, () => {
-	console.log('Server started on port 8000');
+app.listen(8080, () => {
+	console.log('Server started on port 8080');
 });
+
+module.exports = Serverless(app);
