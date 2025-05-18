@@ -1,36 +1,37 @@
 const express = require('express');
 const app = express();
-// const route = require('./routes');
-// const cors = require('cors');
-// const mongodb = require('./data/mongoDB');
-// const MorganMiddleware = require('./middleware/morgan');
-// const AuthService = require('./middleware/auth');
-// const Cloudinary = require('./middleware/cloudinary');
-// const BodyParser = require('./middleware/bodyParser');
+const route = require('./routes');
+const cors = require('cors');
+const mongodb = require('./data/mongoDB');
+const MorganMiddleware = require('./middleware/morgan');
+const AuthService = require('./middleware/auth');
+const Cloudinary = require('./middleware/cloudinary');
+const BodyParser = require('./middleware/bodyParser');
+const PORT = process.env.PORT || 3000;
 
-//body parser
-// BodyParser(app);
+// body parser
+BodyParser(app);
 
-//cloudinary
-// Cloudinary();
+// cloudinary;
+Cloudinary();
 
-//morgan
-// MorganMiddleware(app);
+// morgan;
+MorganMiddleware(app);
 
-// Cors
-// app.use(cors());
+// Cors;s
+app.use(cors());
 
 // Check auth
-// AuthService(app);
+AuthService(app);
 
-//todo: connect db
-// mongodb.connect();
+// todo: connect db
+mongodb.connect();
 
-//Route
-// route(app);
+// Route
+route(app);
 
-app.get('/', (req, res) => {
-    res.send('Hello Vercel!');
-  });
+app.listen(PORT, () => {
+	console.log(`Server is running on port ${PORT}`);
+});
 
 module.exports = app;
