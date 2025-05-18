@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
-const route = require('./routes');
-const cors = require('cors');
+// const route = require('./routes');
+// const cors = require('cors');
 // const mongodb = require('./data/mongoDB');
-const MorganMiddleware = require('./middleware/morgan');
-const AuthService = require('./middleware/auth');
-const Cloudinary = require('./middleware/cloudinary');
-const BodyParser = require('./middleware/bodyParser');
+// const MorganMiddleware = require('./middleware/morgan');
+// const AuthService = require('./middleware/auth');
+// const Cloudinary = require('./middleware/cloudinary');
+// const BodyParser = require('./middleware/bodyParser');
 
 //body parser
 // BodyParser(app);
@@ -18,7 +18,7 @@ const BodyParser = require('./middleware/bodyParser');
 // MorganMiddleware(app);
 
 // Cors
-app.use(cors());
+// app.use(cors());
 
 // Check auth
 // AuthService(app);
@@ -27,6 +27,10 @@ app.use(cors());
 // mongodb.connect();
 
 //Route
-route(app);
+// route(app);
+
+app.get('/', (req, res) => {
+    res.send('Hello Vercel!');
+  });
 
 module.exports = app;

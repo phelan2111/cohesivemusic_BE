@@ -14,9 +14,9 @@ function route(app) {
 	// app.use('/song', SongRouter);
 	// app.use('/playlist', PlaylistRouter);
 	// app.use('/other', OtherRouter);
-	app.get('/', (req, res) => {
-		res.send('Hello from root');
-	});
+	  app.get('/', (req, res) => {
+			res.send('Hello from root');
+		});
 }
 
 module.exports = route;
