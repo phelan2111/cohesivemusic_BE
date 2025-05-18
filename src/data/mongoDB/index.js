@@ -8,13 +8,12 @@ async function connect() {
 	await mongoose
 		.connect(
 			`mongodb+srv://${config.development.db.username}:${config.development.db.password}@music.8qvgt.mongodb.net/cohesive?retryWrites=true&w=majority&appName=music`,
-			{ useNewUrlParser: true, useUnifiedTopology: true },
 		)
 		.then(() => {
 			console.log('Connect successfully');
 		})
-		.catch(() => {
-			console.log('Do not connect to server...');
+		.catch((error) => {
+			console.log('Do not connect to server...', error);
 		});
 }
 
