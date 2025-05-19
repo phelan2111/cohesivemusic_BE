@@ -194,7 +194,7 @@ class UserController {
 									});
 								});
 						} else {
-							User.findByIdAndUpdate(id, { token, status: Enum.user.status.active })
+							User.findOneAndUpdate({ email: infoUser.email }, { token, status: Enum.user.status.active })
 								.then((user) => {
 									const response = {
 										email: user.email,
