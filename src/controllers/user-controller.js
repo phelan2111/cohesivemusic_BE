@@ -240,7 +240,7 @@ class UserController {
 					res.json({
 						...Enum.response.success,
 						data: {
-							...response,
+							info: response,
 							token,
 						},
 					});
@@ -277,7 +277,7 @@ class UserController {
 						res.json({
 							...Enum.response.success,
 							data: {
-								...response,
+								info: response,
 								token,
 							},
 						});
