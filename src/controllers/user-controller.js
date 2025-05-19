@@ -163,33 +163,41 @@ class UserController {
 						cover: config.development.defaultImage.cover,
 						avatar: dataItem.user?.picture,
 					};
-					const token = Helper.generateToken(
-						{
-							...infoUser,
-						},
-						1800,
-					);
-
-					const userScheme = new User({
-						...infoUser,
-						token,
-					});
-					userScheme
-						.save()
+					User.findOne({ email: dataItem.user?.email })
 						.then(() => {
 							res.json({
-								...Enum.response.success,
-								data: {
-									token,
-									info: infoUser,
-								},
+								...Enum.user.userExistedInSystem,
 							});
 						})
-						.catch((error) => {
-							logger.error('Controller user execute register', error);
-							res.json({
-								...Enum.response.systemError,
+						.catch(() => {
+							const token = Helper.generateToken(
+								{
+									...infoUser,
+								},
+								1800,
+							);
+
+							const userScheme = new User({
+								...infoUser,
+								token,
 							});
+							userScheme
+								.save()
+								.then(() => {
+									res.json({
+										...Enum.response.success,
+										data: {
+											token,
+											info: infoUser,
+										},
+									});
+								})
+								.catch((error) => {
+									logger.error('Controller user execute register', error);
+									res.json({
+										...Enum.response.systemError,
+									});
+								});
 						});
 				})
 				.catch(() => {
