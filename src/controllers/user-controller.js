@@ -8,6 +8,7 @@ const ServiceUser = require('../services/user');
 const config = require('../config');
 const bcrypt = require('bcryptjs');
 const VerifyTokenGG = require('../middleware/google');
+const helper = require('../utils/helper');
 
 class UserController {
 	//[POST]-[/user/verifyUsername]
@@ -163,13 +164,9 @@ class UserController {
 						cover: config.development.defaultImage.cover,
 						avatar: dataItem.user?.picture,
 					};
-					User.findOne({ email: dataItem.user?.email })
-						.then(() => {
-							res.json({
-								...Enum.user.userExistedInSystem,
-							});
-						})
-						.catch(() => {
+					User.findOne({ email: dataItem.user?.email }).then((user) => {
+						console.log('user.user?.email', user);
+						if (helper.isEmpty(user)) {
 							const token = Helper.generateToken(
 								{
 									...infoUser,
@@ -198,7 +195,12 @@ class UserController {
 										...Enum.response.systemError,
 									});
 								});
-						});
+						} else {
+							res.json({
+								...Enum.user.userExistedInSystem,
+							});
+						}
+					});
 				})
 				.catch(() => {
 					logger.error('UserValidator execute verifyTokenGG fail');
