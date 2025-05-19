@@ -179,7 +179,10 @@ class UserController {
 						.then(() => {
 							res.json({
 								...Enum.response.success,
-								token,
+								data: {
+									token,
+									info: infoUser,
+								},
 							});
 						})
 						.catch((error) => {
