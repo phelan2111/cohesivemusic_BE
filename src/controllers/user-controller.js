@@ -203,6 +203,7 @@ class UserController {
 										gender: user.gender,
 										playlistId: user.playlistId,
 										role: user.role,
+										avatar: user.avatar,
 									};
 									res.json({
 										...Enum.response.success,
@@ -252,6 +253,7 @@ class UserController {
 						gender: user.gender,
 						playlistId: user.playlistId,
 						role: user.role,
+						avatar: user.avatar,
 					};
 					res.json({
 						...Enum.response.success,
