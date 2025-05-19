@@ -30,7 +30,7 @@ class UserValidator {
 	hasFullValuesLoginWithBO(req, res, next) {
 		logger.info('UserValidator execute hasFullValuesLogin');
 		const isEveryHasValue = !Helper.isEmptyObjectByValidate(req.body, ['password', 'email', 'role']);
-		const isAdmin = Helper.isAdmin(req?.role);
+		const isAdmin = Helper.isAdmin(req.body?.role);
 		if (isEveryHasValue && isAdmin) {
 			next();
 		} else {
