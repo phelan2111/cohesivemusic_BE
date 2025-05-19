@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 var randomstring = require('randomstring');
 const logger = require('../utils/logger');
+const Enum = require('../data/enum');
 
 class Helper {
 	isEmpty(value) {
@@ -35,6 +36,15 @@ class Helper {
 		} catch (error) {
 			logger.error(error);
 		}
+	}
+	isAdmin(role) {
+		if (this.isEmpty(role)) {
+			return false;
+		}
+		if (role === Enum.user.role.admin) {
+			return true;
+		}
+		return false;
 	}
 	generateToken(dataItem, exp) {
 		return jwt.sign(

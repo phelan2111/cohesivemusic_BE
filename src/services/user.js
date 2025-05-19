@@ -25,7 +25,6 @@ class ServiceUser {
 		User.findOne({ email })
 			.then((user) => {
 				const compare = bcrypt.compare(password, user.password);
-				console.log('password', password, user.password);
 
 				compare
 					.then((isEqual) => {

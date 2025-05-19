@@ -8,9 +8,12 @@ const upload = require('../middleware/multer');
 
 // KYC
 router.post('/register', CommonValidator.isValidToken, UserValidator.hasFullValuesRegister, UserController.register);
+router.get('/registerWithGoogle', UserValidator.hasFullValuesLoginWithGG, UserController.registerWithGG);
 router.post('/verifyUsername', UserController.verifyUsername);
 router.post('/verifyOTP', CommonValidator.isValidToken, UserController.verifyOTP);
 router.post('/login', UserValidator.hasFullValuesLogin, ServiceUser.comparePassword, UserController.login);
+router.post('/loginWithBO', UserValidator.hasFullValuesLoginWithBO, ServiceUser.comparePassword, UserController.login);
+router.get('/loginWithGoogle', UserValidator.hasFullValuesLoginWithGG, UserController.loginWithGG);
 
 // User
 router.get('/', CommonValidator.isLoggedIn, UserController.getList);

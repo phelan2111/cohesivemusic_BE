@@ -7,6 +7,7 @@ const ServiceCommon = require('../services/common');
 const ServiceUser = require('../services/user');
 const config = require('../config');
 const bcrypt = require('bcryptjs');
+const VerifyTokenGG = require('../middleware/google');
 
 class UserController {
 	//[POST]-[/user/verifyUsername]
@@ -72,7 +73,6 @@ class UserController {
 			logger.error(error.message);
 		}
 	}
-	7;
 
 	//[POST]-[/user/verifyOTP]
 	verifyOTP(req, res, next) {
@@ -147,6 +147,48 @@ class UserController {
 		}
 	}
 
+	//[POST]-[/user/registerWithGoogle]
+	registerWithGG(req, res, next) {
+		try {
+			logger.info('Controller user execute registerWithGG');
+			VerifyTokenGG(req.headers?.token)
+				.then((dataItem) => {
+					const userScheme = new User({
+						password: dataItem.user?.sub,
+						firstName: dataItem.user?.family_name,
+						lastName: dataItem.user?.given_name,
+						email: dataItem.user?.email,
+						status: Enum.user.status.active,
+						role: Enum.user.role.normal,
+						cover: config.development.defaultImage.cover,
+						avatar: dataItem.user?.picture,
+					});
+					userScheme
+						.save()
+						.then(() => {
+							res.json({
+								...Enum.response.success,
+							});
+						})
+						.catch((error) => {
+							logger.error('Controller user execute register', error);
+							res.json({
+								...Enum.response.systemError,
+							});
+						});
+				})
+				.catch(() => {
+					logger.error('UserValidator execute verifyTokenGG fail');
+
+					res.json({
+						...Enum.response.systemError,
+					});
+				});
+		} catch (error) {
+			logger.error('Controller user execute register', error.message);
+		}
+	}
+
 	//[POST]-[/user/login]
 	login(req, res, next) {
 		try {
@@ -185,6 +227,48 @@ class UserController {
 		} catch (error) {
 			logger.error('Controller user execute login', error.message);
 		}
+	}
+
+	//[POST]-[/user/loginWithGG]
+	loginWithGG(req, res, next) {
+		VerifyTokenGG(req.headers?.token)
+			.then((dataItem) => {
+				const token = Helper.generateToken(
+					{
+						...dataItem,
+					},
+					1800,
+				);
+				User.findByIdAndUpdate(id, { token, status: Enum.user.status.active })
+					.then((user) => {
+						const response = {
+							email: user.email,
+							firstName: user.firstName,
+							lastName: user.lastName,
+							gender: user.gender,
+							playlistId: user.playlistId,
+							role: user.role,
+						};
+						res.json({
+							...Enum.response.success,
+							data: {
+								...response,
+								token,
+							},
+						});
+					})
+					.catch((error) => {
+						logger.error('Controller user execute login', error);
+						res.json({ ...Enum.response.systemError });
+					});
+			})
+			.catch(() => {
+				logger.error('UserValidator execute verifyTokenGG fail');
+
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
 	}
 
 	//[GET]-[/user/details]
