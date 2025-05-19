@@ -153,7 +153,7 @@ class UserController {
 			logger.info('Controller user execute registerWithGG');
 			VerifyTokenGG(req.headers?.token)
 				.then((dataItem) => {
-					const userScheme = new User({
+					const infoUser = {
 						password: dataItem.user?.sub,
 						firstName: dataItem.user?.family_name,
 						lastName: dataItem.user?.given_name,
@@ -162,12 +162,24 @@ class UserController {
 						role: Enum.user.role.normal,
 						cover: config.development.defaultImage.cover,
 						avatar: dataItem.user?.picture,
+					};
+					const token = Helper.generateToken(
+						{
+							...infoUser,
+						},
+						1800,
+					);
+
+					const userScheme = new User({
+						...infoUser,
+						token,
 					});
 					userScheme
 						.save()
 						.then(() => {
 							res.json({
 								...Enum.response.success,
+								token,
 							});
 						})
 						.catch((error) => {
