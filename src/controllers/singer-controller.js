@@ -202,7 +202,7 @@ class SingerController {
 						...Enum.response.success,
 						data: {
 							...dataResponse,
-							genres: genreOfSingerItem.genres.map((i) => ServiceGenre.convertResponseGenre(i)),
+							genres: genreOfSingerItem.genres.map((i) => ServiceGenre.convertGenreForSinger(i)),
 						},
 					});
 				});
