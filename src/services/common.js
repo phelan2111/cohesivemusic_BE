@@ -1,10 +1,12 @@
 const nodeMailer = require('nodemailer');
 const config = require('../config');
 const cloudinary = require('cloudinary');
+const logger = require('../utils/logger');
 
 class ServiceCommon {
 	async resendEmail(options) {
 		const transporter = nodeMailer.createTransport({
+			service: 'gmail',
 			host: config.development.smpt.host,
 			port: config.development.smpt.port,
 			secure: false,
@@ -25,7 +27,11 @@ class ServiceCommon {
 			html: options.message,
 		};
 
-		await transporter.sendMail(mailOptions);
+		try {
+			await transporter.sendMail(mailOptions);
+		} catch (error) {
+			logger.error('resendEmail execute transporter fail', error)
+		}
 	}
 	async uploadImage(formData, options, cb) {
 		return await cloudinary.v2.uploader.upload(formData, options, cb);
