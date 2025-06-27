@@ -17,7 +17,19 @@ class UserValidator {
 	}
 	hasFullValuesLogin(req, res, next) {
 		logger.info('UserValidator execute hasFullValuesLogin');
-		const isEveryHasValue = !Helper.isEmptyObjectByValidate(req.body, ['password', 'email', 'roles']);
+		const isEveryHasValue = !Helper.isEmptyObjectByValidate(req.body, ['password', 'email']);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			logger.info('UserValidator not hasFullValues');
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+	hasFullValuesForgot(req, res, next) {
+		logger.info('UserValidator execute hasFullValuesLogin');
+		const isEveryHasValue = !Helper.isEmptyObjectByValidate(req.body, ['email']);
 		if (isEveryHasValue) {
 			next();
 		} else {

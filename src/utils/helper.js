@@ -57,7 +57,7 @@ class Helper {
 	}
 	randomOTP() {
 		return randomstring.generate({
-			length: 6,
+			length: 5,
 			charset: 'numeric',
 		});
 	}

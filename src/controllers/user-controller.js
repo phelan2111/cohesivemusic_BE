@@ -67,9 +67,58 @@ class UserController {
 						})
 						.catch((error) => {
 							logger.error(error.message);
+							res.json({
+								...Enum.user.userExistedInSystem,
+							});
 						});
 				}
 			});
+		} catch (error) {
+			logger.error(error.message);
+			res.json({
+				...Enum.user.userExistedInSystem,
+			});
+		}
+	}
+
+	//[POST]-[/user/resendOTP]
+	resendOTP(req, res, next) {
+		try {
+			logger.info('Controller user execute verify username');
+			logger.debug('Controller user get request from client', req.body);
+			const { email } = req.body;
+			const otpRandom = Helper.randomOTP();
+			OTP.findOneAndUpdate({ email }, { otp: otpRandom })
+				.then(() => {
+					ServiceCommon.resendEmail({
+						to: email,
+						subject: 'Your OTP',
+						message: `<p>Your OTP is: <strong>${otpRandom}</strong></p>`,
+					})
+						.then(() => {
+							logger.info('Controller user execute MiddlewareResendEmail success');
+							res.json({
+								...Enum.response.success,
+								data: {
+									email,
+									token: Helper.generateToken(
+										{
+											email,
+										},
+										5,
+									),
+								},
+							});
+						})
+						.catch(() => {
+							res.json({
+								...Enum.user.userExistedInSystem,
+							});
+						});
+				})
+				.catch((error) => {
+					logger.error(error.message);
+				});
 		} catch (error) {
 			logger.error(error.message);
 		}
@@ -94,7 +143,7 @@ class UserController {
 									{
 										email,
 									},
-									30,
+									5,
 								),
 							},
 						});
@@ -121,7 +170,7 @@ class UserController {
 			const { password, firstName, lastName } = req.body;
 			const { email } = req.user;
 			const userScheme = new User({
-				password,
+				password: bcrypt.hashSync(password, 10),
 				firstName,
 				lastName,
 				email,
@@ -447,6 +496,81 @@ class UserController {
 					...Enum.response.systemError,
 				});
 			});
+	}
+
+	//[POST]-[/user/forgot]
+	forgot(req, res, next) {
+		try {
+			logger.info('Controller user execute forgot');
+			logger.debug('Controller user execute forgot', req.body);
+			const { email } = req.body;
+			User.findOne({ email }).then((user) => {
+				const hasUserExist = Helper.isEmpty(user);
+				if (hasUserExist) {
+					res.json({
+						...Enum.user.userExistedInSystem,
+					});
+				} else {
+					const token = Helper.generateToken(
+						{
+							email,
+						},
+						5,
+					);
+					ServiceCommon.resendEmail({
+						to: email,
+						subject: 'Reset password',
+						message: `<p>
+						<a href="https://cohesivemusic.vercel.app/kyc/reset/${token}">
+						click here to reset password</a>
+						</p>`,
+					})
+						.then(() => {
+							logger.info('Controller user execute MiddlewareResendEmail success');
+							res.json({
+								...Enum.response.success,
+							});
+						})
+						.catch(() => {
+							res.json({
+								...Enum.user.userExistedInSystem,
+							});
+						});
+				}
+			});
+		} catch (error) {
+			logger.error(error.message);
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+
+	//[POST]-[/user/reset]
+	reset(req, res, next) {
+		try {
+			logger.info('Controller user execute reset');
+			logger.debug('Controller user execute reset', req.body);
+			const { password } = req.body;
+			const { email } = req.user;
+
+			User.findByIdAndUpdate({ email }, { password: bcrypt.hashSync(password, 10) })
+				.then(() => {
+					res.json({
+						...Enum.response.success,
+					});
+				})
+				.catch(() => {
+					res.json({
+						...Enum.response.systemError,
+					});
+				});
+		} catch (error) {
+			logger.error(error.message);
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
 	}
 }
 module.exports = new UserController();
