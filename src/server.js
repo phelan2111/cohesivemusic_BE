@@ -7,7 +7,7 @@ const MorganMiddleware = require('./middleware/morgan');
 const AuthService = require('./middleware/auth');
 const Cloudinary = require('./middleware/cloudinary');
 const BodyParser = require('./middleware/bodyParser');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 // body parser
 BodyParser(app);
