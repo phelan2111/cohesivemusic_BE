@@ -27,6 +27,7 @@ class PlaylistValidators {
 	}
 	hasFullValuesDetails(req, res, next) {
 		logger.info('PlaylistValidators execute hasFullValuesDetails');
+		logger.debug('PlaylistValidators execute hasFullValuesDetails query', req.query);
 		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.query, ['playlistId']);
 		if (isEveryHasValue) {
 			next();
@@ -57,6 +58,19 @@ class PlaylistValidators {
 			'songs',
 			'theme',
 		]);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+
+	//User
+	hasFullValuesGetByUser(req, res, next) {
+		logger.info('PlaylistValidators execute hasFullValuesGetByUser');
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.query, ['limit', 'from']);
 		if (isEveryHasValue) {
 			next();
 		} else {

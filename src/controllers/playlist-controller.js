@@ -231,6 +231,127 @@ class PlaylistController {
 			});
 		}
 	}
+
+	//[GET]-[/playlist/me]
+	me(req, res, next) {
+		try {
+			const { playlistId } = req.query;
+			Playlist.find({ playlistId })
+				.then((singerItem) => {
+					const dataResponse = ServicePlaylist.convertResponsePlaylist(singerItem);
+					SongOfPlaylist.findOne({ playlistId }).then((dataPlaylist) => {
+						const songs = dataPlaylist.songs.map(async (s) => {
+							const singers = await SingerOfSong.findOne({ songId: s.songId }).then((dataSong) => {
+								return dataSong.singers.map((singer) => ServicePlaylist.convertResponseArtist(singer));
+							});
+							return {
+								...ServiceSong.convertResponseSong(s),
+								songId: s.songId,
+								singers,
+							};
+						});
+						Promise.all(songs).then((data) => {
+							res.json({
+								...Enum.response.success,
+								data: {
+									...dataResponse,
+									songs: data,
+								},
+							});
+						});
+					});
+				})
+				.catch((error) => {
+					throw new Error(error);
+				});
+		} catch (error) {
+			logger.error(error);
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+
+	//[GET]-[/playlist/getRecent]
+	getRecent(req, res, next) {
+		logger.info('Controller singer execute upload image username');
+		logger.debug('Controller singer get request from client', req.file);
+		const { from, limit, search = '', ...rest } = req.query;
+
+		try {
+			const query = Helper.cleanObject(
+				Helper.search(search, {
+					status: Enum.playList.status.display,
+				}),
+			);
+
+			Playlist.find(query)
+				.limit(limit)
+				.skip(from)
+				.sort(rest)
+				.then((playlists) => {
+					Playlist.countDocuments(query)
+						.exec()
+						.then((total) => {
+							res.json({
+								...Enum.response.success,
+								data: {
+									list: playlists.map((i) => ServicePlaylist.convertResponsePlaylist(i)),
+									total,
+								},
+							});
+						});
+				})
+				.catch((error) => {
+					throw new Error(error);
+				});
+		} catch (error) {
+			logger.error(error);
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+	//[GET]-[/playlist/getFromUserWeb]
+	getFromUserWeb(req, res, next) {
+		logger.info('Controller singer execute upload image username');
+		logger.debug('Controller singer get request from client', req.file);
+		const { from, limit, status = '', search = '', ...rest } = req.query;
+
+		try {
+			const query = Helper.cleanObject(
+				Helper.search(search, {
+					status,
+				}),
+			);
+
+			Playlist.find(query)
+				.limit(limit)
+				.skip(from)
+				.sort(rest)
+				.then((playlists) => {
+					Playlist.countDocuments(query)
+						.exec()
+						.then((total) => {
+							res.json({
+								...Enum.response.success,
+								data: {
+									list: playlists.map((i) => ServicePlaylist.convertResponsePlaylist(i)),
+									total,
+								},
+							});
+						});
+				})
+				.catch((error) => {
+					throw new Error(error);
+				});
+		} catch (error) {
+			logger.error(error);
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
 }
 
 module.exports = new PlaylistController();

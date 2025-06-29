@@ -43,6 +43,9 @@ const SongOfPlaylist = new Schema(
 					type: Number,
 					required: true,
 				},
+				duration: {
+					type: Number,
+				},
 			},
 		],
 	},
