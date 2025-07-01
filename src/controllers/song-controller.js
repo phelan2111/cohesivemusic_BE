@@ -213,6 +213,48 @@ class SongController {
 				});
 			});
 	}
+
+	//[GET]-[/song/byUserWeb]
+	getByUserWeb(req, res, next) {
+		const { from, limit, status, search = '', type, ...rest } = req.query;
+		const query = Helper.search(
+			search,
+			Helper.cleanObject({
+				status: Enum.song.status.display,
+				type,
+			}),
+		);
+
+		Song.find(query)
+			.limit(limit)
+			.skip(from)
+			.sort(rest)
+			.then((songs) => {
+				SingerOfSong.find({}).then((singersOfSong) => {
+					const dataResponse = songs.map((i) => ServiceSong.convertResponseSong(i));
+					for (let i = 0; i < dataResponse.length; i++) {
+						const song = dataResponse[i];
+						const { index, isExist } = helper.findItem(singersOfSong, 'songId', song.songId.toString());
+						if (isExist) {
+							dataResponse[i].singers = singersOfSong[index].singers;
+						}
+					}
+					res.json({
+						...Enum.response.success,
+						data: {
+							list: dataResponse,
+							total: songs.length,
+						},
+					});
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+	}
 }
 
 module.exports = new SongController();

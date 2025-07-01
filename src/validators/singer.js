@@ -60,7 +60,7 @@ class SingerValidator {
 
 	//User
 	hasFullValuesGetByUser(req, res, next) {
-		logger.info('PlaylistValidators execute hasFullValuesGetByUser');
+		logger.info('SingerValidator execute hasFullValuesGetByUser');
 		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.query, ['limit', 'from']);
 		if (isEveryHasValue) {
 			next();
