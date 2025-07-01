@@ -5,6 +5,8 @@ const SingerValidator = require('../validators/singer');
 const CommonValidator = require('../validators/common');
 const upload = require('../middleware/multer');
 
+
+// Back Office
 router.post('/uploadAvatar', upload.single('file'), Singer.uploadAvatar);
 router.post('/uploadCovers', upload.array('file', 4), Singer.uploadCovers);
 router.put('/', CommonValidator.isLoggedIn, SingerValidator.hasFullValuesCreate, Singer.create);
@@ -12,6 +14,9 @@ router.post('/', CommonValidator.isLoggedIn, SingerValidator.hasFullValuesUpdate
 router.delete('/', CommonValidator.isLoggedIn, SingerValidator.hasFullValuesUpdateStatus, Singer.updateStatus);
 router.get('/', CommonValidator.isLoggedIn, Singer.get);
 router.get('/details', CommonValidator.isLoggedIn, SingerValidator.hasFullValuesDetails, Singer.details);
+
+// User
+router.get('/byUserWeb', CommonValidator.isLoggedIn, SingerValidator.hasFullValuesGetByUser, Singer.getByUserWeb);
 
 
 module.exports = router;

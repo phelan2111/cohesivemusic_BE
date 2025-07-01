@@ -63,6 +63,7 @@ const Enum = {
 		status: {
 			hidden: 0,
 			display: 1,
+			user: 2,
 		},
 	},
 	response: {

@@ -57,6 +57,19 @@ class SingerValidator {
 			});
 		}
 	}
+
+	//User
+	hasFullValuesGetByUser(req, res, next) {
+		logger.info('PlaylistValidators execute hasFullValuesGetByUser');
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.query, ['limit', 'from']);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
 }
 
 module.exports = new SingerValidator();

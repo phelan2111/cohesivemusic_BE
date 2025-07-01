@@ -9,6 +9,8 @@ const config = require('../config');
 const bcrypt = require('bcryptjs');
 const VerifyTokenGG = require('../middleware/google');
 const helper = require('../utils/helper');
+const Playlist = require('../models/playlist-model');
+const SongOfPlaylist = require('../models/songOfPlaylist-model');
 
 class UserController {
 	//[POST]-[/user/verifyUsername]
@@ -181,10 +183,33 @@ class UserController {
 			});
 			userScheme
 				.save()
-				.then(() => {
-					res.json({
-						...Enum.response.success,
+				.then((user) => {
+					const playList = new Playlist({
+						viewSaves: 0,
+						userId: user._id.toString(),
+						songs: [],
+						status: Enum.playList.status.user,
+						descriptionPlaylist: 'Liked',
+						image: config.development.defaultImage.playlist,
+						theme: 'Liked',
+						namePlaylist: 'Liked Songs',
 					});
+					playList
+						.save()
+						.then((item) => {
+							const songOfPlaylist = new SongOfPlaylist({
+								playlistId: item._id,
+								songs: [],
+							});
+							songOfPlaylist.save().then(() => {
+								res.json({
+									...Enum.response.success,
+								});
+							});
+						})
+						.catch((error) => {
+							throw new Error(error);
+						});
 				})
 				.catch((error) => {
 					logger.error('Controller user execute register', error);

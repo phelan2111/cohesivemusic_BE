@@ -279,13 +279,7 @@ class PlaylistController {
 		const { from, limit, search = '', ...rest } = req.query;
 
 		try {
-			const query = Helper.cleanObject(
-				Helper.search(search, {
-					status: Enum.playList.status.display,
-				}),
-			);
-
-			Playlist.find(query)
+			Playlist.find({ status: Enum.playList.status.display })
 				.limit(limit)
 				.skip(from)
 				.sort(rest)
@@ -314,8 +308,8 @@ class PlaylistController {
 	}
 	//[GET]-[/playlist/getFromUserWeb]
 	getFromUserWeb(req, res, next) {
-		logger.info('Controller singer execute upload image username');
-		logger.debug('Controller singer get request from client', req.file);
+		logger.info('Controller getFromUserWeb execute upload image username');
+		logger.debug('Controller getFromUserWeb get request from client', req.file);
 		const { from, limit, status = '', search = '', ...rest } = req.query;
 
 		try {

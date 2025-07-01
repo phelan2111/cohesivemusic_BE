@@ -7,6 +7,7 @@ const Song = require('../models/song-model');
 const SingerOfSong = require('../models/singerOfSong-model');
 const Helper = require('../utils/helper');
 const helper = require('../utils/helper');
+const Singer = require('../models/singer-model');
 
 class SongController {
 	//[PUT]-[/song]
@@ -24,14 +25,22 @@ class SongController {
 					songId: item._id,
 					singers,
 				});
-				genreOfSing.save().then(() => {
-					res.json({
-						...Enum.response.success,
-						data: {
-							songId: item._id,
-						},
+				const singersRecord = singers.map((s) => Singer.findByIdAndUpdate(s?.singerId, { status: Enum.singer.status.active }));
+
+				Promise.all(singersRecord)
+					.then(() => {
+						genreOfSing.save().then(() => {
+							res.json({
+								...Enum.response.success,
+								data: {
+									songId: item._id,
+								},
+							});
+						});
+					})
+					.catch(() => {
+						throw new Error('Not update status singer');
 					});
-				});
 			})
 			.catch((error) => {
 				logger.error(error);

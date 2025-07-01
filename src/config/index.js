@@ -23,6 +23,7 @@ module.exports = {
 		defaultImage: {
 			cover: process.env.COVER_DEFAULT,
 			avatar: process.env.AVATAR_DEFAULT,
+			playlist: process.env.PLAYLIST_DEFAULT,
 		},
 	},
 };

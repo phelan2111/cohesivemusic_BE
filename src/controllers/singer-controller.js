@@ -214,6 +214,37 @@ class SingerController {
 				});
 			});
 	}
+
+	//[GET]-[/singer/byUserWeb]
+	getByUserWeb(req, res, next) {
+		const { from, limit, search = '', ...rest } = req.query;
+		const query = Helper.search(
+			search,
+			Helper.cleanObject({
+				status: Enum.singer.status.active,
+			}),
+		);
+
+		Singer.find(query)
+			.limit(limit)
+			.skip(from)
+			.sort(rest)
+			.then((singers) => {
+				res.json({
+					...Enum.response.success,
+					data: {
+						list: singers.map((s) => ServiceArtist.convertResponseArtist(s)),
+						total: singers.length,
+					},
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+	}
 }
 
 module.exports = new SingerController();
