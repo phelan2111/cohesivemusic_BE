@@ -44,7 +44,165 @@ class UserController {
 							ServiceCommon.resendEmail({
 								to: email,
 								subject: 'Your OTP',
-								message: `<p>Your OTP is: <strong>${otpRandom}</strong></p>`,
+								message: `<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ii-HUB ZMA Worldfone User Information</title>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; background-color: #f0f0f0; line-height: 1.6; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+    
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #f0f0f0;">
+        <tr>
+            <td style="padding: 20px 0;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
+                    
+                    <!-- Header Section -->
+                    <tr>
+                        <td style="padding: 30px 40px 20px;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 30px;">
+                                <tr>
+                                    <td style="vertical-align: middle; padding-right: 10px;">
+                                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #ff6b6b, #4ecdc4); border-radius: 8px; display: inline-block; text-align: center; line-height: 40px; font-weight: bold; color: white; font-size: 18px;">
+                                            ii
+                                        </div>
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        <div style="font-size: 24px; font-weight: bold; color: #333333; line-height: 1.2;">
+                                            ii-HUB
+                                            <div style="font-size: 12px; color: #ff6b6b; font-weight: normal;">
+                                                DATA SCIENCE
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding: 0 40px 40px;">
+                            <!-- Title -->
+                            <h1 style="color: #333333; font-size: 28px; font-weight: bold; margin: 0 0 8px 0; line-height: 1.3;">
+                                Thông tin người dùng liên hệ nhận tư vấn từ <span style="color: #2765F2;">ZMA Worldfone</span>
+                            </h1>
+                            
+                            <!-- User Information -->
+                            <div style="margin-bottom: 30px;">
+                                <p style="color: #333333; font-size: 14px; margin: 0 0 15px 0; line-height: 1.5;">
+                                    <strong>Thân gửi:</strong> <span style="color: #343535; font-weight: bold;">[Tên Admin]</span>
+                                    <br />
+                                    Chúng tôi vừa nhận được thông tin từ người dùng qua đăng ký trên <strong>Zalo Mini App</strong> của <strong>Worldfone</strong>. Chi tiết như sau:
+                                </p>
+                                
+                                <!-- User Details -->
+                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 25px;">
+                                    <tr>
+                                        <td style="color: #333333; font-size: 14px; width: 130px; vertical-align: top;">
+                                            Tên doanh nghiệp:
+                                        </td>
+                                        <td style="color: #333333; font-size: 14px; font-weight: bold;">
+                                            <span style="color: #343535;">[Tên doanh nghiệp]</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #333333; font-size: 14px; width: 130px; vertical-align: top;">
+                                            Họ và tên:
+                                        </td>
+                                        <td style="color: #333333; font-size: 14px; font-weight: bold;">
+                                            <span style="color: #343535;">[Họ và Tên người dùng]</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #333333; font-size: 14px; width: 130px; vertical-align: top;">
+                                            Số điện thoại:
+                                        </td>
+                                        <td style="color: #333333; font-size: 14px; font-weight: bold;">
+                                            <span style="color: #343535;">[Số điện thoại]</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #333333; font-size: 14px; width: 130px; vertical-align: top;">
+                                            Email:
+                                        </td>
+                                        <td style="color: #333333; font-size: 14px; font-weight: bold;">
+                                            <span style="color: #343535;">[Email người dùng]</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #333333; font-size: 14px; width: 130px; vertical-align: top;">
+                                            Khu vực:
+                                        </td>
+                                        <td style="color: #333333; font-size: 14px; font-weight: bold;">
+                                            <span style="color: #343535;">[Tên khu vực]</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #333333; font-size: 14px; width: 130px; vertical-align: top;">
+                                            Lời nhắn:
+                                        </td>
+                                        <td style="color: #333333; font-size: 14px; font-weight: bold;">
+                                            <span style="color: #343535;">[Nhu cầu hoặc yêu cầu của người dùng]</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
+                                <!-- Additional Information -->
+                                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-bottom: 25px;">
+                                    <tr>
+                                        <td style="color: #333333; font-size: 14px; width: 130px; vertical-align: top;">
+                                            Nguồn truy cập:
+                                        </td>
+                                        <td style="color: #333333; font-size: 14px; font-weight: bold;">
+                                            <span style="color: #343535;">[Mini App Worldfone trên nền tảng Zalo]</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #333333; font-size: 14px; padding: 5px 0; width: 130px; vertical-align: top;">
+                                            Ngày và giờ gửi:
+                                        </td>
+                                        <td style="color: #333333; font-size: 14px; padding: 5px 0; font-weight: bold;">
+                                            <span style="color: #343535;">[Ngày giờ]</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <p style="color: #333333; font-size: 14px; margin: 0 0 30px 0; line-height: 1.5;">
+                                                <span>Vui lòng kiểm tra và phản hồi lại người dùng trong thời gian sớm nhất.</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                
+                                
+                            </div>
+                            
+                            <!-- Footer Message -->
+                            <p style="color: #3A3A3A; font-size: 14px; margin: 0 0 8px 0; line-height: 1.5;">
+                                <span>Trân trọng cảm ơn!</strong>
+                                <br />
+                                <strong>Team ii-HUB</span>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+</body>
+</html>`,
 							})
 								.then(() => {
 									logger.info('Controller user execute MiddlewareResendEmail success');
@@ -238,13 +396,15 @@ class UserController {
 						cover: config.development.defaultImage.cover,
 						avatar: dataItem.user?.picture,
 					};
-					const token = Helper.generateToken(
-						{
-							...infoUser,
-						},
-						1800,
-					);
+					
 					User.findOne({ email: dataItem.user?.email }).then((user) => {
+						const token = Helper.generateToken(
+							{
+								...infoUser,
+							},
+							1800,
+						);
+
 						if (helper.isEmpty(user)) {
 							const userScheme = new User({
 								...infoUser,
