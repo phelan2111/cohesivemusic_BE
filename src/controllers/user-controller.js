@@ -396,30 +396,56 @@ class UserController {
 						cover: config.development.defaultImage.cover,
 						avatar: dataItem.user?.picture,
 					};
-					
-					User.findOne({ email: dataItem.user?.email }).then((user) => {
-						const token = Helper.generateToken(
-							{
-								...infoUser,
-							},
-							1800,
-						);
 
+					User.findOne({ email: dataItem.user?.email }).then((user) => {
+						logger.info('Controller user execute registerWithGG', user);
 						if (helper.isEmpty(user)) {
 							const userScheme = new User({
 								...infoUser,
-								token,
 							});
 							userScheme
 								.save()
-								.then(() => {
-									res.json({
-										...Enum.response.success,
-										data: {
-											token,
-											info: infoUser,
+								.then((user) => {
+									const token = Helper.generateToken(
+										{
+											...infoUser,
+											userId: user._id.toString(),
 										},
+										1800,
+									);
+									User.findByIdAndUpdate(user._id.toString(), { token }).then(() => {
+										const playList = new Playlist({
+											viewSaves: 0,
+											userId: user._id.toString(),
+											songs: [],
+											status: Enum.playList.status.user,
+											descriptionPlaylist: 'Liked',
+											image: config.development.defaultImage.playlist,
+											theme: 'Liked',
+											namePlaylist: 'Liked Songs',
+										});
+										playList
+											.save()
+											.then((item) => {
+												const songOfPlaylist = new SongOfPlaylist({
+													playlistId: item._id,
+													songs: [],
+												});
+												songOfPlaylist.save().then(() => {
+													res.json({
+														...Enum.response.success,
+														data: {
+															token,
+															info: { ...infoUser, userId: user._id.toString() },
+														},
+													});
+												});
+											})
+											.catch((error) => {
+												throw new Error(error);
+											});
 									});
+									
 								})
 								.catch((error) => {
 									logger.error('Controller user execute register', error);
@@ -428,7 +454,14 @@ class UserController {
 									});
 								});
 						} else {
-							User.findOneAndUpdate({ email: infoUser.email }, { token, status: Enum.user.status.active })
+							const token = Helper.generateToken(
+								{
+									...infoUser,
+									userId: user._id.toString(),
+								},
+								1800,
+							);
+							User.findOneAndUpdate({ _id: user._id.toString() }, { token, status: Enum.user.status.active })
 								.then((user) => {
 									const response = {
 										email: user.email,
@@ -438,6 +471,7 @@ class UserController {
 										playlistId: user.playlistId,
 										role: user.role,
 										avatar: user.avatar,
+										userId: user._id.toString(),
 									};
 									res.json({
 										...Enum.response.success,
@@ -468,17 +502,17 @@ class UserController {
 	//[POST]-[/user/login]
 	login(req, res, next) {
 		try {
-			const { id, password, ...rest } = req.body;
+			const { userId, password, ...rest } = req.body;
 			const token = Helper.generateToken(
 				{
 					...rest,
 					password,
-					id,
+					userId,
 				},
 				1800,
 			);
 
-			User.findByIdAndUpdate(id, { token, status: Enum.user.status.active })
+			User.findByIdAndUpdate(userId, { token, status: Enum.user.status.active })
 				.then((user) => {
 					const response = {
 						email: user.email,

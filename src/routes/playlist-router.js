@@ -14,9 +14,21 @@ router.get('/', CommonValidator.isLoggedIn, PlaylistValidators.hasFullValuesGet,
 router.get('/details', CommonValidator.isLoggedIn, PlaylistValidators.hasFullValuesDetails, PlaylistController.details);
 
 // COHESIVE USER
-router.get('/me', CommonValidator.isLoggedIn, PlaylistValidators.hasFullValuesGetByUser, PlaylistController.me);
+router.get('/me', CommonValidator.isLoggedIn, PlaylistController.me);
 router.get('/getRecent', CommonValidator.isLoggedIn, PlaylistValidators.hasFullValuesGetByUser, PlaylistController.getRecent);
 router.get('/getFromUserWeb', CommonValidator.isLoggedIn, PlaylistValidators.hasFullValuesGetByUser, PlaylistController.getFromUserWeb);
+router.get(
+	'/getFromUserWebDetails',
+	CommonValidator.isLoggedIn,
+	PlaylistValidators.hasFullValuesDetails,
+	PlaylistController.getFromUserWebDetails,
+);
+router.post(
+	'/getFromUserWeb/update',
+	CommonValidator.isLoggedIn,
+	PlaylistValidators.hasFullValuesGetByUserAdd,
+	PlaylistController.getFromUserWebUpdate,
+);
 
 
 

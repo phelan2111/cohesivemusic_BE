@@ -65,6 +65,10 @@ const Enum = {
 			display: 1,
 			user: 2,
 		},
+		songBelongUser: {
+			no: 0,
+			yes: 1,
+		},
 	},
 	response: {
 		success: {

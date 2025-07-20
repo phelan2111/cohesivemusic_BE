@@ -6,8 +6,10 @@ class CommonValidator {
 	isLoggedIn(req, res, next) {
 		if (req.user) {
 			logger.info('UserValidator execute isLoggedIn success');
-			const { email } = req.user;
-			User.findOne({ email }).then((user) => {
+			logger.debug('UserValidator get user from token', req.user);
+			const { userId } = req.user;
+			logger.debug('UserValidator get userId from token', userId);
+			User.findOne({ _id: userId }).then((user) => {
 				const hasLoggedAtOtherPlace = req.headers.token === user?.token;
 				if (hasLoggedAtOtherPlace) {
 					next();

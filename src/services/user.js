@@ -29,7 +29,7 @@ class ServiceUser {
 				compare
 					.then((isEqual) => {
 						if (isEqual) {
-							req.body.id = user._id.toString();
+							req.body.userId = user._id.toString();
 							next();
 						} else {
 							res.json({

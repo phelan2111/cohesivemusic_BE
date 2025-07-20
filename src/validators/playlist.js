@@ -79,6 +79,18 @@ class PlaylistValidators {
 			});
 		}
 	}
+	hasFullValuesGetByUserAdd(req, res, next) {
+		logger.info('PlaylistValidators execute hasFullValuesDetails');
+		logger.debug('PlaylistValidators execute hasFullValuesDetails query', req.body);
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['songId']);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
 }
 
 module.exports = new PlaylistValidators();
