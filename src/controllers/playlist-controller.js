@@ -320,7 +320,7 @@ class PlaylistController {
 	getFromUserWeb(req, res, next) {
 		logger.info('Controller getFromUserWeb execute upload image username');
 		logger.debug('Controller getFromUserWeb get request from client', req.query);
-		const { from, limit, status = '', search = '', ...rest } = req.query;
+		const { from, limit, status = Enum.playList.status.display, search = '', ...rest } = req.query;
 
 		try {
 			const query = Helper.cleanObject(
