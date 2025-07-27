@@ -15,6 +15,22 @@ class ServiceSong {
 			duration: dataItem?.duration,
 		};
 	}
+	convertResponseArtistShort(dataItem) {
+		return {
+			singerName: dataItem.singerName,
+			singerId: dataItem._id,
+		};
+	}
+	convertResponseSongShort(dataItem) {
+		return {
+			songName: dataItem.songName,
+			image: dataItem.image,
+			link: dataItem.link,
+			songId: dataItem._id,
+			type: dataItem?.type,
+			duration: dataItem?.duration,
+		};
+	}
 }
 
 module.exports = new ServiceSong();

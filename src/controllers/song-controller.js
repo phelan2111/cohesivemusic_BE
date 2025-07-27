@@ -255,6 +255,31 @@ class SongController {
 				});
 			});
 	}
+
+	//[GET]-[/song/byUserWeb/short]
+	detailsShort(req, res, next) {
+		const { songId } = req.query;
+
+		Song.findOne({ _id: songId })
+			.then((songItem) => {
+				const dataResponse = ServiceSong.convertResponseSongShort(songItem);
+				SingerOfSong.findOne({ songId }).then((singerOfSongItem) => {
+					res.json({
+						...Enum.response.success,
+						data: {
+							...dataResponse,
+							singers: singerOfSongItem.singers.map((i) => ServiceSong.convertResponseArtistShort(i)),
+						},
+					});
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+	}
 }
 
 module.exports = new SongController();

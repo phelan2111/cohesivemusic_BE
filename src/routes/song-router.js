@@ -17,5 +17,7 @@ router.get('/details', CommonValidator.isLoggedIn, SongValidator.hasFullValuesDe
 
 // user
 router.get('/byUserWeb', CommonValidator.isLoggedIn, SongValidator.hasFullValuesGetByUser, Song.getByUserWeb);
+router.get('/byUserWeb/short', CommonValidator.isLoggedIn, SongValidator.hasFullValuesDetails, Song.detailsShort);
+
 
 module.exports = router;
