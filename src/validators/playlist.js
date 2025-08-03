@@ -80,8 +80,20 @@ class PlaylistValidators {
 		}
 	}
 	hasFullValuesGetByUserAdd(req, res, next) {
-		logger.info('PlaylistValidators execute hasFullValuesDetails');
-		logger.debug('PlaylistValidators execute hasFullValuesDetails query', req.body);
+		logger.info('PlaylistValidators execute hasFullValuesGetByUserAdd');
+		logger.debug('PlaylistValidators execute hasFullValuesGetByUserAdd query', req.body);
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['songId']);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+	hasFullValuesGetByUserUpdate(req, res, next) {
+		logger.info('PlaylistValidators execute hasFullValuesGetByUserUpdate');
+		logger.debug('PlaylistValidators execute hasFullValuesGetByUserUpdate query', req.body);
 		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['songId']);
 		if (isEveryHasValue) {
 			next();

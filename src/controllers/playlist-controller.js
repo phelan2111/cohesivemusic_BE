@@ -239,15 +239,15 @@ class PlaylistController {
 			Playlist.find({ userId: req.user.userId })
 				.then(async (playlist) => {
 					const playListOfMe = await playlist.map(async (item) => {
-						const dataResponse = ServicePlaylist.convertResponsePlaylist(item);
-						const songsOfPlaylist = await SongOfPlaylist.findOne({ playlistId: item._id.toString() }).then((dataPlaylist) => {
-							logger.debug('Controller me get dataPlaylist', dataPlaylist);
-							const songs = dataPlaylist.songs.map(async (s) => {
+						const dataResponse = ServicePlaylist.convertResponsePlaylistMe(item);
+						const songsOfPlaylist = await SongOfPlaylist.findOne({ playlistId: item._id.toString() }).then((dataSongOfPlaylist) => {
+							logger.debug('Controller me get dataSongOfPlaylist', dataSongOfPlaylist);
+							const songs = dataSongOfPlaylist.songs.map(async (s) => {
 								const singers = await SingerOfSong.findOne({ songId: s.songId }).then((dataSong) => {
 									return dataSong.singers.map((singer) => ServicePlaylist.convertResponseArtist(singer));
 								});
 								return {
-									...ServiceSong.convertResponseSong(s),
+									...ServiceSong.convertResponseSongShort(s),
 									songId: s.songId,
 									singers,
 								};
@@ -367,8 +367,8 @@ class PlaylistController {
 			logger.debug('Controller getFromUserWebDetails get idUser', req.user);
 
 			Playlist.findOne({ _id: playlistId })
-				.then((singerItem) => {
-					const dataResponse = ServicePlaylist.convertResponsePlaylist(singerItem);
+				.then((playlist) => {
+					const dataResponse = ServicePlaylist.convertResponsePlaylist(playlist);
 					SongOfPlaylist.findOne({ playlistId }).then((dataPlaylist) => {
 						const songs = dataPlaylist.songs.map(async (s) => {
 							return await SongOfEachUser.findOne({ userId: req.user.userId })
@@ -429,14 +429,14 @@ class PlaylistController {
 		}
 	}
 
-	//[PUT]-[/getFromUserWeb/add]
-	getFromUserWebUpdate(req, res, next) {
+	//[POST]-[/getFromUserWeb/add]
+	getFromUserWebAdd(req, res, next) {
 		try {
 			const { songId, playlistId } = req.body;
-			logger.info('Controller getFromUserWebUpdate execute');
-			logger.debug('Controller getFromUserWebUpdate get request from client', req.query);
-			logger.debug('Controller getFromUserWebUpdate get songId', songId);
-			logger.debug('Controller getFromUserWebUpdate get idUser', req.user);
+			logger.info('Controller getFromUserWebAdd execute');
+			logger.debug('Controller getFromUserWebAdd get request from client', req.query);
+			logger.debug('Controller getFromUserWebAdd get songId', songId);
+			logger.debug('Controller getFromUserWebAdd get idUser', req.user);
 			const payload = {
 				userId: req.user.userId,
 			};
@@ -450,7 +450,7 @@ class PlaylistController {
 					throw new Error('Song not found');
 				}
 				const songAfterFind = ServiceSong.convertResponseSong(s);
-				logger.debug('Controller getFromUserWebUpdate get song', songAfterFind);
+				logger.debug('Controller getFromUserWebAdd get song', songAfterFind);
 				SongOfEachUser.findOne({ userId: req.user.userId }).then((sUser) => {
 					if (!sUser) {
 						const songOfEachUser = new SongOfEachUser({
@@ -459,14 +459,14 @@ class PlaylistController {
 						});
 						songOfEachUser.save().then(() => {
 							Playlist.findOneAndUpdate(payload, { songs: [songId] }).then((playlist) => {
-								logger.debug('Controller getFromUserWebUpdate get playlist', playlist);
+								logger.debug('Controller getFromUserWebAdd get playlist', playlist);
 								if (!playlist) {
 									throw new Error('Playlist not found');
 								}
-								SongOfPlaylist.findOneAndUpdate({ playlistId: playlist._id.toString() }, { $push: { songs: songAfterFind } }, { new: true })
+								SongOfPlaylist.findOneAndUpdate({ playlistId: playlist._id.toString() }, { $addToSet: { songs: songAfterFind } })
 									.exec()
 									.then((dataItem) => {
-										logger.debug('Controller getFromUserWebUpdate get dataItem', dataItem);
+										logger.debug('Controller getFromUserWebAdd get dataItem', dataItem);
 										res.json({
 											...Enum.response.success,
 											mess: 'Add song to playlist successfully',
@@ -483,7 +483,7 @@ class PlaylistController {
 							Playlist.findOneAndUpdate(payload, { $push: { songs: songId } })
 								.exec()
 								.then((playlist) => {
-									logger.debug('Controller getFromUserWebUpdate get playlist when user exists', playlist);
+									logger.debug('Controller getFromUserWebAdd get playlist when user exists', playlist);
 									if (!playlist) {
 										throw new Error('Playlist not found');
 									}
@@ -494,8 +494,8 @@ class PlaylistController {
 									)
 										.exec()
 										.then((dataItem) => {
-											logger.debug('Controller getFromUserWebUpdate  when user exists get dataItem', dataItem);
-											SongOfEachUser.findOneAndUpdate({ userId: req.user.userId }, { $push: { songsId: songId } }).then(() => {
+											logger.debug('Controller getFromUserWebAdd  when user exists get dataItem', dataItem);
+											SongOfEachUser.findOneAndUpdate({ userId: req.user.userId }, { $addToSet: { songsId: songId } }).then(() => {
 												res.json({
 													...Enum.response.success,
 													mess: 'Add song to playlist successfully',
@@ -507,6 +507,61 @@ class PlaylistController {
 										});
 								});
 						}
+					}
+				});
+			});
+		} catch (error) {
+			logger.error(error);
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
+
+	//[POST]-[/getFromUserWeb/update]
+	getFromUserWebUpdate(req, res, next) {
+		try {
+			const { songId, playlistIds } = req.body;
+			logger.info('Controller getFromUserWebUpdate execute');
+			logger.debug('Controller getFromUserWebUpdate get request from client', req.body);
+			logger.debug('Controller getFromUserWebUpdate get songId', songId);
+			logger.debug('Controller getFromUserWebUpdate get idUser', req.user);
+			Song.findOne({ _id: songId }).then(async (s) => {
+				if (!s) {
+					throw new Error('Song not found');
+				}
+				const songAfterFind = ServiceSong.convertResponseSong(s);
+				const playlists = await Playlist.find({ userId: req.user.userId });
+				const bulkOps = ServicePlaylist.bulkOps(playlists, playlistIds, songId, songId);
+				async function bulkWriteFUnc() {
+					await Playlist.bulkWrite(bulkOps).then( async () => {
+						const bulkOfSongs = ServicePlaylist.bulkOpsForSongOfPlaylist(playlists, playlistIds, songId, songAfterFind);
+						SongOfPlaylist.bulkWrite(bulkOfSongs)
+							.catch((error) => {
+								throw new Error(error);
+							});
+					});
+				}
+				logger.debug('Controller getFromUserWebUpdate getPlaylist', playlistIds.length);
+				bulkWriteFUnc().then(() => {
+					if (playlistIds.length > 0) {
+						logger.info('Controller getFromUserWebUpdate SongOfEachUser add:');
+						SongOfEachUser.findOneAndUpdate({ userId: req.user.userId }, { $addToSet: { songsId: songId } }).then(async () => {
+							res.json({
+								...Enum.response.success,
+								mess: 'Update song to playlist successfully',
+								data: {},
+							});
+						});
+					} else {
+						logger.info('Controller getFromUserWebUpdate SongOfEachUser remove all');
+						SongOfEachUser.findOneAndUpdate({ userId: req.user.userId }, { $pull: { songsId: songId } }).then(async () => {
+							res.json({
+								...Enum.response.success,
+								mess: 'Update song to playlist successfully',
+								data: {},
+							});
+						});
 					}
 				});
 			});

@@ -24,9 +24,15 @@ router.get(
 	PlaylistController.getFromUserWebDetails,
 );
 router.post(
-	'/getFromUserWeb/update',
+	'/getFromUserWeb/add',
 	CommonValidator.isLoggedIn,
 	PlaylistValidators.hasFullValuesGetByUserAdd,
+	PlaylistController.getFromUserWebAdd,
+);
+router.post(
+	'/getFromUserWeb/update',
+	CommonValidator.isLoggedIn,
+	PlaylistValidators.hasFullValuesGetByUserUpdate,
 	PlaylistController.getFromUserWebUpdate,
 );
 
