@@ -103,6 +103,18 @@ class PlaylistValidators {
 			});
 		}
 	}
+	hasFullValuesCreateByASongPlaylistByUserWeb(req, res, next) {
+		logger.info('PlaylistValidators execute hasFullValuesCreateByASongPlaylistByUserWeb');
+		logger.debug('PlaylistValidators execute hasFullValuesCreateByASongPlaylistByUserWeb query', req.body);
+		const isEveryHasValue = !helper.isEmptyObjectByValidate(req.body, ['songId', 'descriptionPlaylist', 'image', 'namePlaylist']);
+		if (isEveryHasValue) {
+			next();
+		} else {
+			res.json({
+				...Enum.response.systemError,
+			});
+		}
+	}
 }
 
 module.exports = new PlaylistValidators();

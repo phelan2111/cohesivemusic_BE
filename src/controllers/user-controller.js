@@ -346,7 +346,7 @@ class UserController {
 						viewSaves: 0,
 						userId: user._id.toString(),
 						songs: [],
-						status: Enum.playList.status.user,
+						status: Enum.playList.status.liked,
 						descriptionPlaylist: 'Liked',
 						image: config.development.defaultImage.playlist,
 						theme: 'Liked',

@@ -24,16 +24,22 @@ router.get(
 	PlaylistController.getFromUserWebDetails,
 );
 router.post(
-	'/getFromUserWeb/add',
+	'/getFromUserWeb/addSongToPlaylist',
 	CommonValidator.isLoggedIn,
 	PlaylistValidators.hasFullValuesGetByUserAdd,
-	PlaylistController.getFromUserWebAdd,
+	PlaylistController.addSongToPlaylistByUserWeb,
 );
 router.post(
-	'/getFromUserWeb/update',
+	'/getFromUserWeb/updateSongToPlaylist',
 	CommonValidator.isLoggedIn,
 	PlaylistValidators.hasFullValuesGetByUserUpdate,
-	PlaylistController.getFromUserWebUpdate,
+	PlaylistController.updateSongToPlaylistByUserWeb,
+);
+router.post(
+	'/getFromUserWeb/createByASong',
+	CommonValidator.isLoggedIn,
+	PlaylistValidators.hasFullValuesCreateByASongPlaylistByUserWeb,
+	PlaylistController.createByASongPlaylistByUserWeb,
 );
 
 

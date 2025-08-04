@@ -64,6 +64,7 @@ const Enum = {
 			hidden: 0,
 			display: 1,
 			user: 2,
+			liked: 3,
 		},
 		songBelongUser: {
 			no: 0,

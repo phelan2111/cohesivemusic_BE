@@ -1,3 +1,5 @@
+const logger = require('../utils/logger');
+
 class ServicePlaylist {
 	convertResponsePlaylist(dataItem) {
 		return {
@@ -33,9 +35,10 @@ class ServicePlaylist {
 			viewSaves: dataItem.viewSaves,
 			status: dataItem.status,
 			theme: dataItem.theme,
+			descriptionPlaylist: dataItem.descriptionPlaylist,
 		};
 	}
-	bulkOps(playlists, playlistIds, songId, item) {
+	bulkOps(playlists, playlistIds, songId) {
 		const bulkOps = playlists.map((playlist) => {
 			const shouldHave = playlistIds.includes(playlist._id.toString());
 			const alreadyHas = playlist.songs.includes(songId);
@@ -44,7 +47,7 @@ class ServicePlaylist {
 				return {
 					updateOne: {
 						filter: { _id: playlist._id },
-						update: { $addToSet: { songs: item } },
+						update: { $addToSet: { songs: songId } },
 					},
 				};
 			}
@@ -53,7 +56,7 @@ class ServicePlaylist {
 				return {
 					updateOne: {
 						filter: { _id: playlist._id },
-						update: { $pull: { songs: item } },
+						update: { $pull: { songs: songId } },
 					},
 				};
 			}
@@ -66,6 +69,7 @@ class ServicePlaylist {
 		const bulkOps = playlists.map((playlist) => {
 			const shouldHave = playlistIds.includes(playlist._id.toString());
 			const alreadyHas = playlist.songs.includes(songId);
+			logger.debug('ServicePlaylist bulkOpsForSongOfPlaylist condition', { shouldHave, alreadyHas });
 
 			if (shouldHave && !alreadyHas) {
 				return {
