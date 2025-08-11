@@ -9,6 +9,7 @@ const ServicePlaylist = require('../services/playlist');
 const ServiceSong = require('../services/song');
 const Helper = require('../utils/helper');
 const logger = require('../utils/logger');
+const SingerModel = require('../models/singer-model');
 
 class PlaylistController {
 	//[PUT]-[/playlist]
@@ -239,6 +240,7 @@ class PlaylistController {
 			Playlist.find({ userId: req.user.userId })
 				.then(async (playlist) => {
 					const playListOfMe = await playlist.map(async (item) => {
+						logger.debug('Controller me get item', item);
 						const dataResponse = ServicePlaylist.convertResponsePlaylistMe(item);
 						const songsOfPlaylist = await SongOfPlaylist.findOne({ playlistId: item._id.toString() }).then((dataSongOfPlaylist) => {
 							logger.debug('Controller me get dataSongOfPlaylist', dataSongOfPlaylist);
@@ -328,19 +330,18 @@ class PlaylistController {
 					status,
 				}),
 			);
-
-			Playlist.find(query)
+			Playlist.find({ ...query, userId: { $ne: req.user.userId } }) // $ne "not equal"
 				.limit(limit)
 				.skip(from)
 				.sort(rest)
-				.then((playlists) => {
-					Playlist.countDocuments(query)
+				.then(async (pl) => {
+					Playlist.countDocuments({})
 						.exec()
 						.then((total) => {
 							res.json({
 								...Enum.response.success,
 								data: {
-									list: playlists.map((i) => ServicePlaylist.convertResponsePlaylist(i)),
+									list: pl.map((i) => ServicePlaylist.convertResponsePlaylist(i)),
 									total,
 								},
 							});
@@ -370,50 +371,60 @@ class PlaylistController {
 				.then((playlist) => {
 					const dataResponse = ServicePlaylist.convertResponsePlaylist(playlist);
 					SongOfPlaylist.findOne({ playlistId }).then((dataPlaylist) => {
-						const songs = dataPlaylist.songs.map(async (s) => {
-							return await SongOfEachUser.findOne({ userId: req.user.userId })
-								.then(async (sUser) => {
-									const singers = await SingerOfSong.findOne({ songId: s.songId }).then((dataSong) => {
-										return dataSong.singers.map((singer) => ServicePlaylist.convertResponseArtist(singer));
-									});
-									const response = {
-										...ServiceSong.convertResponseSong(s),
-										songId: s.songId,
-										singers,
-									};
-									try {
-										logger.debug('Controller getFromUserWebDetails get sUser', sUser);
-
-										if (!sUser) {
-											throw new Error('User not found');
-										}
-										const isSong = sUser.songsId.find((sU) => s.songId.toString() === sU.toString());
-										if (!isSong) {
-											throw new Error('User not found');
-										}
-										return {
-											...response,
-											isBelong: Enum.playList.songBelongUser.yes,
-										};
-									} catch (error) {
-										return {
-											...response,
-											isBelong: Enum.playList.songBelongUser.no,
-										};
-									}
-								})
-								.catch((error) => {
-									throw new Error(error);
-								});
-						});
-						Promise.all(songs).then((data) => {
-							logger.debug('Controller getFromUserWebDetails get data', data);
-							res.json({
-								...Enum.response.success,
-								data: {
-									...dataResponse,
-									songs: data,
+						SingerModel.find({ status: Enum.singer.status.lock }).then(async (singer) => {
+							const songsNotValid = await SingerOfSong.find({
+								'singers.singerId': {
+									$in: singer.map((i) => i._id),
 								},
+							});
+							const songsIdNotValid = songsNotValid.map((s) => s.songId);
+							const songs = dataPlaylist.songs
+								.filter((s) => !songsIdNotValid.includes(s.songId))
+								.map(async (s) => {
+									return await SongOfEachUser.findOne({ userId: req.user.userId })
+										.then(async (sUser) => {
+											const singers = await SingerOfSong.findOne({ songId: s.songId }).then((dataSong) => {
+												return dataSong.singers.map((singer) => ServicePlaylist.convertResponseArtist(singer));
+											});
+											const response = {
+												...ServiceSong.convertResponseSong(s),
+												songId: s.songId,
+												singers,
+											};
+											try {
+												logger.debug('Controller getFromUserWebDetails get sUser', sUser);
+
+												if (!sUser) {
+													throw new Error('User not found');
+												}
+												const isSong = sUser.songsId.find((sU) => s.songId.toString() === sU.toString());
+												if (!isSong) {
+													throw new Error('User not found');
+												}
+												return {
+													...response,
+													isBelong: Enum.playList.songBelongUser.yes,
+												};
+											} catch (error) {
+												return {
+													...response,
+													isBelong: Enum.playList.songBelongUser.no,
+												};
+											}
+										})
+										.catch((error) => {
+											throw new Error(error);
+										});
+								});
+							Promise.all(songs).then((data) => {
+								logger.debug('Controller getFromUserWebDetails get data', data);
+								res.json({
+									...Enum.response.success,
+									data: {
+										...dataResponse,
+										songs: data,
+									},
+								});
 							});
 						});
 					});
@@ -598,7 +609,7 @@ class PlaylistController {
 					viewSaves: 0,
 					userId: req.user.userId,
 					songs: [songId],
-					status: Enum.playList.status.user,
+					status: Enum.playList.status.display,
 					descriptionPlaylist,
 					image,
 					theme: '#aa0909',
@@ -639,6 +650,8 @@ class PlaylistController {
 			});
 		}
 	}
+
+	//[POST]-[/getFromUserWeb/viewPlaylist]
 }
 
 module.exports = new PlaylistController();

@@ -6,6 +6,7 @@ const Singer = require('../models/singer-model');
 const GenreOfSinger = require('../models/genreOfSinger-model');
 const ServiceGenre = require('../services/genre');
 const Helper = require('../utils/helper');
+const SingerOfSongModel = require('../models/singerOfSong-model');
 
 class SingerController {
 	//[PUT]-[/singer]
@@ -175,11 +176,22 @@ class SingerController {
 
 		Singer.findByIdAndUpdate(singerId, { status })
 			.then((singerItem) => {
-				res.json({
-					...Enum.response.success,
-					data: {
-						id: singerItem._id.toString(),
+				SingerOfSongModel.updateMany(
+					{
+						'singers.singerId': singerId,
 					},
+					{
+						$set: {
+							'singers.$.status': status,
+						},
+					},
+				).then(() => {
+					res.json({
+						...Enum.response.success,
+						data: {
+							id: singerItem._id.toString(),
+						},
+					});
 				});
 			})
 			.catch((error) => {

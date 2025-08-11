@@ -8,6 +8,7 @@ const SingerOfSong = require('../models/singerOfSong-model');
 const Helper = require('../utils/helper');
 const helper = require('../utils/helper');
 const Singer = require('../models/singer-model');
+const SongOfPlaylistModel = require('../models/songOfPlaylist-model');
 
 class SongController {
 	//[PUT]-[/song]
@@ -270,6 +271,43 @@ class SongController {
 							...dataResponse,
 							singers: singerOfSongItem.singers.map((i) => ServiceSong.convertResponseArtistShort(i)),
 						},
+					});
+				});
+			})
+			.catch((error) => {
+				logger.error(error);
+				res.json({
+					...Enum.response.systemError,
+				});
+			});
+	}
+
+	//[POST]-[/getFromUserWeb/viewSong]
+	updateViewSong(req, res, next) {
+		const { songId } = req.body;
+
+		Song.updateOne(
+			{
+				_id: songId,
+			},
+			{
+				$inc: { views: 1 }, // cộng thêm 1
+			},
+		)
+			.then((songItem) => {
+				SongOfPlaylistModel.updateMany(
+					{
+						'songs.songId': songId,
+					},
+					{
+						$inc: {
+							'songs.$.views': 1, //$ đại diện cho phần tử đầu tiên trong mảng thỏa điều kiện filter. $[elem] là tất cả phần tử
+						},
+					},
+				).then(() => {
+					res.json({
+						...Enum.response.success,
+						data: {},
 					});
 				});
 			})
