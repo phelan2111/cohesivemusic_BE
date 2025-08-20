@@ -58,6 +58,10 @@ const Enum = {
 			hidden: 0,
 			display: 1,
 		},
+		songBelongUser: {
+			no: 0,
+			yes: 1,
+		},
 	},
 	playList: {
 		status: {

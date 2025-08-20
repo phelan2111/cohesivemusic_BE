@@ -9,6 +9,7 @@ const Helper = require('../utils/helper');
 const helper = require('../utils/helper');
 const Singer = require('../models/singer-model');
 const SongOfPlaylistModel = require('../models/songOfPlaylist-model');
+const SongOfEachUserModel = require('../models/songOfEachUser-model');
 
 class SongController {
 	//[PUT]-[/song]
@@ -216,45 +217,58 @@ class SongController {
 	}
 
 	//[GET]-[/song/byUserWeb]
-	getByUserWeb(req, res, next) {
-		const { from, limit, status, search = '', type, ...rest } = req.query;
-		const query = Helper.search(
-			search,
-			Helper.cleanObject({
-				status: Enum.song.status.display,
-				type,
-			}),
-		);
+	async getByUserWeb(req, res, next) {
+		try {
+			logger.info('Controller getByUserWeb execute');
+			logger.debug('Controller getByUserWeb get request from client', req.query);
+			logger.debug('Controller getByUserWeb get idUser', req.user);
+			const { from, limit, status, search = '', type, ...rest } = req.query;
+			const query = Helper.search(
+				search,
+				Helper.cleanObject({
+					status: Enum.song.status.display,
+					type,
+				}),
+			);
 
-		Song.find(query)
-			.limit(limit)
-			.skip(from)
-			.sort(rest)
-			.then((songs) => {
-				SingerOfSong.find({}).then((singersOfSong) => {
-					const dataResponse = songs.map((i) => ServiceSong.convertResponseSong(i));
-					for (let i = 0; i < dataResponse.length; i++) {
-						const song = dataResponse[i];
-						const { index, isExist } = helper.findItem(singersOfSong, 'songId', song.songId.toString());
-						if (isExist) {
-							dataResponse[i].singers = singersOfSong[index].singers;
-						}
-					}
-					res.json({
-						...Enum.response.success,
-						data: {
-							list: dataResponse,
-							total: songs.length,
-						},
-					});
-				});
+			const songsOfUser = await SongOfEachUserModel.findOne({ userId: req.user.userId }).then((item) => item.songsId);
+			Song.find({
+				...query,
 			})
-			.catch((error) => {
-				logger.error(error);
-				res.json({
-					...Enum.response.systemError,
+				.limit(limit)
+				.skip(from)
+				.sort(rest)
+				.then((songs) => {
+					SingerOfSong.find({}).then((singersOfSong) => {
+						const dataResponse = songs.map((i) => ({
+							...ServiceSong.convertResponseSong(i),
+							isBelong: songsOfUser.includes(i._id) ? Enum.song.songBelongUser.yes : Enum.song.songBelongUser.no,
+						}));
+						for (let i = 0; i < dataResponse.length; i++) {
+							const song = dataResponse[i];
+							const { index, isExist } = helper.findItem(singersOfSong, 'songId', song.songId.toString());
+							if (isExist) {
+								dataResponse[i].singers = singersOfSong[index].singers;
+							}
+						}
+						res.json({
+							...Enum.response.success,
+							data: {
+								list: dataResponse,
+								total: songs.length,
+							},
+						});
+					});
+				})
+				.catch((error) => {
+					throw new Error(error);
 				});
+		} catch (error) {
+			logger.error(error);
+			res.json({
+				...Enum.response.systemError,
 			});
+		}
 	}
 
 	//[GET]-[/song/byUserWeb/short]
